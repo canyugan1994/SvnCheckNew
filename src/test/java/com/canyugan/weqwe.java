@@ -1,9 +1,9 @@
 package com.canyugan;
 
+import java.net.URLEncoder;
+
 public class weqwe {
 	public static void main(String[] args) {
-		String test = "检查报表20190626162729";
-		System.out.println(test.length());
-		System.out.println(test.substring(4));
+		System.out.println(URLEncoder.encode("PJ-LX-2018-01-新一代互联网平台建设项目-图解kafka实战.png"));
 	}
 }

@@ -22,12 +22,14 @@ public class SXProjectInfoService
 	private static final Logger LOG = LoggerFactory.getLogger(SXProjectInfoService.class);
 	@Value("${project_host}")
 	private String project_host;
+	@Value("${current_year}")
+	private Integer current_year;
 	
 	public JSONArray sendServiceRequest() 
 	{
 		OkHttpClient client = new OkHttpClient()
-                .newBuilder().connectTimeout(15000, TimeUnit.MILLISECONDS)//15s超时
-                .readTimeout(15000, TimeUnit.MILLISECONDS).build();
+                .newBuilder().connectTimeout(25000, TimeUnit.MILLISECONDS)//15s超时
+                .readTimeout(25000, TimeUnit.MILLISECONDS).build();
 
 		try {
 			Request request = new Request.Builder().url(project_host).get().build();
@@ -45,11 +47,10 @@ public class SXProjectInfoService
 				for (int index = 0; index < length; index++) 
 				{
 					temp = (JSONObject) projectAttr.get(index);
-					//项目组为null的直接过滤
-					if(temp.getString("pTeam") == null) {
+					//过滤非当年项目
+					if(!temp.getString("projectId").contains(String.valueOf(current_year))) {
 						continue;
 					}
-
 					JSONObject return_result_single = new JSONObject();
 					return_result_single.put("pProdLine", temp.get("pProdLine"));
 					//项目组
@@ -58,7 +59,6 @@ public class SXProjectInfoService
 					return_result_single.put("projectHeader", temp.get("projectHeader"));
 					return_result_single.put("projectStatus", temp.get("projectStatus"));
 					return_result_single.put("projectLists", temp.get("projectLists"));
-
 					//项目名
 					return_result_single.put("projectName", temp.get("projectName"));
 					//项目编号

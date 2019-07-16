@@ -69,7 +69,6 @@ public class WebSocketController implements WebSocketHandler
 		{
 			double loading = 0;
 			Jedis jedis = null;
-
 			/**
 			 * 考虑任务执行失败 任务key被删除的情况
 			 */
@@ -80,16 +79,18 @@ public class WebSocketController implements WebSocketHandler
 				//如果value为空 可能是检查任务执行失败 任务key被删除
 				if(value == null) {
 					//任务key被删了 可能遇到了失败 结束websocket
-					LOGGER.info("-->【 根据request_id：[" + request_id +  "]获得的value为null 可能遇到了任务执行失败的情况 关闭websocket】");
+					LOGGER.info("-->【 根据request_id：[" + request_id +  "]获得的value为null 可能遇到了任务执行失败的情况 服务器正在关闭websocket】");
 					result.put("status", "error");
-					result.put("message", "任务执行失败 进度不再提供");
+					result.put("message", "任务key为null 任务执行失败 进度不再提供");
+					request_ids.remove(request_id);
 					TextMessage resp_error = new TextMessage(result.toJSONString().getBytes());
 					session.sendMessage(resp_error);
 					session.close();
 					sessions.remove(session);
 				}else {
 					JSONObject parse_value = JSONObject.parseObject(value);
-					float project_sum = 0;//项目模板检查总数量
+					float project_sum = 0;
+					//项目模板检查总数量
 					Set<String> keys = parse_value.keySet();
 					for (String key : keys) {
 						JSONObject temp_jsonobject = (JSONObject) parse_value.get(key);
@@ -97,7 +98,7 @@ public class WebSocketController implements WebSocketHandler
 						int length = temp_array.size();
 						project_sum += length;
 					}
-					//	如果比例达到100% || 手动关闭了websocket ，那么就不继续执行了
+					//如果比例达到100% || 手动关闭了websocket ，那么就不继续执行了
 					while (loading < 100 && request_ids.contains(request_id)) {
 						float aleady_done = 0;
 						value = jedis.get(request_id);
@@ -109,6 +110,7 @@ public class WebSocketController implements WebSocketHandler
 							LOGGER.info("-->【 根据request_id：[" + request_id +  "]获得的value为null 可能遇到了任务执行失败的情况 关闭websocket】");
 							result.put("status", "error");
 							result.put("message", "任务执行失败 进度不再提供");
+							request_ids.remove(request_id);
 							TextMessage resp_error = new TextMessage(result.toJSONString().getBytes());
 							session.sendMessage(resp_error);
 							session.close();
@@ -128,20 +130,19 @@ public class WebSocketController implements WebSocketHandler
 							}
 							//计算比例
 							loading = (aleady_done / project_sum) * 100;
-							LOGGER.info("-->request_id为" + request_id + "的进度信息 【 模板总数:" + project_sum
+							LOGGER.info("-->request_id:[" + request_id + "]的进度信息 【 模板总数:" + project_sum
 									+ ",已完成:" + aleady_done + ",进度:" + loading + "% 】");
-
 							result.put("status", "success");
 							result.put("message", String.valueOf(loading));
 							TextMessage resp_success = new TextMessage(result.toJSONString().getBytes());
 							session.sendMessage(resp_success);
-
 							try {
-								Thread.sleep(2000);
+								Thread.sleep(1000);
 							} catch (Exception e) {
 								LOGGER.info("-->【 sleep异常，异常信息：" + e.getMessage() + " 】");
 								result.put("status", "error");
 								result.put("message", "服务器异常 请联系管理员");
+								request_ids.remove(request_id);
 								TextMessage resp_error = new TextMessage(result.toJSONString().getBytes());
 								session.sendMessage(resp_error);
 								session.close();
@@ -151,6 +152,7 @@ public class WebSocketController implements WebSocketHandler
 					}
 					//退出轮询 
 					LOGGER.info("-->【 request_id:[" + request_id + "] 的websocket长连接由于被手动取消或者任务执行比例达到100%关闭 】");
+					request_ids.remove(request_id);
 					session.close();
 					sessions.remove(session);
 				}
@@ -158,13 +160,14 @@ public class WebSocketController implements WebSocketHandler
 				LOGGER.info("-->【 加载进度失败，失败信息:" + e.getMessage() + " 】");
 				result.put("status", "error");
 				result.put("message", "服务器异常 请联系管理员");
+				request_ids.remove(request_id);
 				TextMessage resp_error = new TextMessage(result.toJSONString().getBytes());
 				session.sendMessage(resp_error);
 				session.close();
 				sessions.remove(session);
 			}
 		} else {
-			LOGGER.info("不存在该request_id对应的进度信息");
+			LOGGER.info("-->【 不存在该request_id对应的进度信息 】");
 			result.put("status", "error");
 			result.put("message", "不存在该request_id对应的进度信息");
 			TextMessage resp_error = new TextMessage(result.toJSONString().getBytes());
@@ -185,9 +188,9 @@ public class WebSocketController implements WebSocketHandler
 		JSONObject result = new JSONObject();
 		result.put("status", "error");
 		result.put("message", "websocket传输错误 不可恢复 请重新连接");
+		request_ids.remove(request_id);//终止发送消息那段循环
 		TextMessage resp_error = new TextMessage(result.toJSONString().getBytes());
 		session.sendMessage(resp_error);
-
 		session.close();
 		sessions.remove(session);
 	}
@@ -198,8 +201,9 @@ public class WebSocketController implements WebSocketHandler
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
 		String request_id = (String) session.getAttributes().get("request_id");
-		LOGGER.info("被request_id为[" + request_id + "]关闭了websocket");
+		LOGGER.info("-->【 被request_id为[" + request_id + "]关闭了websocket 】");
 		request_ids.remove(request_id);
+		session.close();
 		sessions.remove(session);
 	}
 

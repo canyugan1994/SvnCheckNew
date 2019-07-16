@@ -22,7 +22,7 @@ public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, 
             WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception 
     {
-        LOGGER.info("在websocket连接之前完成握手. ");
+        LOGGER.info("-->【 在websocket连接之前完成握手 】");
         
         // 获取url传递的参数，通过attributes在Interceptor处理结束后传递给WebSocketHandler
         // WebSocketHandler可以通过WebSocketSession的getAttributes()方法获取参数
@@ -30,11 +30,11 @@ public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor
         String request_id = serverRequest.getServletRequest().getParameter("request_id");
 
         if (request_id != null) {
-            LOGGER.info("验证通过. WebSocket connecting.... ");
+            LOGGER.info("-->【 验证通过. WebSocket connecting 】");
             attributes.put("request_id", request_id);
             return super.beforeHandshake(request, response, wsHandler, attributes);
         } else {
-            LOGGER.error("验证失败. WebSocket will not connect. ");
+            LOGGER.error("-->【 验证失败. WebSocket will not connect 】");
             return false;
         }
     }
@@ -42,6 +42,6 @@ public class HandShakeInterceptor extends HttpSessionHandshakeInterceptor
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
             WebSocketHandler wsHandler, Exception ex) {
-       
+       LOGGER.info("-->【 握手成功了 你想干啥干啥 】");
     }
 }

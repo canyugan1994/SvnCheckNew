@@ -30,8 +30,8 @@ public class SXNeedService
 	public JSONArray sendServiceRequest() 
 	{
 		OkHttpClient client = new OkHttpClient()
-                .newBuilder().connectTimeout(15000, TimeUnit.MILLISECONDS)//15s超时
-                .readTimeout(15000, TimeUnit.MILLISECONDS).build();
+                .newBuilder().connectTimeout(25000, TimeUnit.MILLISECONDS)//15s超时
+                .readTimeout(25000, TimeUnit.MILLISECONDS).build();
 		try 
 		{
 			Request request = new Request.Builder().url(rqn_host).get().build();
@@ -49,7 +49,6 @@ public class SXNeedService
 				{
 					temp = (JSONObject) need_project.get(index);
 					if ("已归档".equals(temp.get("requirementStatu"))) {
-
 						JSONObject return_result_single = new JSONObject();
 						return_result_single.put("project_num", temp.get("requirementId"));//需求编号 RQN-2018-IT039-0039
 						return_result_single.put("projectName", temp.get("projectName"));//项目名称  PJ-LX-2018-002-001-人工智能平台运营
