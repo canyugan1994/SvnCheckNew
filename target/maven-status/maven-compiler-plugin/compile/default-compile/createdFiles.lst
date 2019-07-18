@@ -1,5 +1,6 @@
 com/canyugan/dao/SvnCheckDao.class
 com/canyugan/controller/ReportController$DownloadReport.class
+com/canyugan/configuration/QuartzSynchProject.class
 com/canyugan/controller/MigrationController$2.class
 com/canyugan/pojo/CheckDataModel.class
 com/canyugan/configuration/Swagger2.class
@@ -11,6 +12,7 @@ com/canyugan/pojo/MaintainModel.class
 com/canyugan/controller/ExcelCheckController$2.class
 com/canyugan/pojo/CalculationModel.class
 com/canyugan/pojo/ProjectListModel.class
+com/canyugan/controller/SynchronizController.class
 com/canyugan/configuration/Redis.class
 com/canyugan/service/SvnCheckService.class
 com/canyugan/pojo/realListMoel.class
@@ -18,6 +20,7 @@ com/canyugan/controller/MigrationController$3.class
 com/canyugan/interceptor/HandShakeInterceptor.class
 com/canyugan/controller/ReportController.class
 com/canyugan/pojo/MetaModel.class
+com/canyugan/pojo/ProjectInfo.class
 com/canyugan/service/SXNeedService.class
 com/canyugan/controller/OtherController.class
 com/canyugan/pojo/DDRModel.class
@@ -41,3 +44,4 @@ com/canyugan/configuration/WebSocketConfig.class
 com/canyugan/controller/ExcelCheckController$QuitCheck.class
 com/canyugan/pojo/ProjectListRead.class
 com/canyugan/controller/OtherController$AuditReport.class
+com/canyugan/configuration/ProjectSyncJob.class

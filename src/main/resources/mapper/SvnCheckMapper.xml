@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.canyugan.dao.SvnCheckDao" >
+    
+    <insert id="batchInsertProject">
+    	insert into project_info(pProdLine,pTeam,
+    							 projectCatagory,projectHeader,
+    							 projectStatus,projectLists,
+    							 projectName,projectId,
+    							 migrationStatus,migrationDate)
+    	values
+    	<foreach collection="projects" item="project" separator=",">
+    		(#{project.pProdLine},#{project.pTeam},
+    		 #{project.projectCatagory},#{project.projectHeader},
+    		 #{project.projectStatus},#{project.projectLists},
+    		 #{project.projectName},#{project.projectId},
+    		 #{project.migrationStatus},#{project.migrationDate})
+    	</foreach>
+    </insert>
+    
+    <select id="getAllProjectCode" resultType="java.lang.String">
+    	select projectId from project_info 
+    </select>
+    
+    <select id="getAllProject" resultType="com.canyugan.pojo.ProjectInfo">
+    	select * from project_info 
+    </select>
+    
+    <!-- <insert id="batchInsertArticle">
+    	insert into document(source_link,content_source,
+    	                     content_time,title,
+    	                     content,img,fastdfs_link)
+    	 values
+    	 <foreach collection="documents" item="document" separator=",">
+    	 		(#{document.source_link},#{document.content_source},
+    	 		 #{document.content_time},#{document.title},
+    	 		 #{document.content},#{document.img},#{document.fastdfs_link})
+    	 </foreach>
+    </insert> -->
+</mapper>

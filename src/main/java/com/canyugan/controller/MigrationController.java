@@ -3,6 +3,7 @@ package com.canyugan.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.canyugan.service.SXNeedService;
+import com.canyugan.service.SvnCheckService;
 import com.canyugan.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
@@ -79,6 +80,8 @@ public class MigrationController
 	private Integer execute_num;//同时迁移的人数
 	@Value("${svn_save_path}")
 	private String svn_save_path;
+	@Autowired
+	private SvnCheckService svnCheckService;
 	
 	@ApiModel(value = "Migration", description = "")
 	@Data

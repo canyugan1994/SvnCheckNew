@@ -4,6 +4,7 @@
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/WebSocketConfig.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/controller/OtherController.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/CalculationModel.java
+/Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/MyJobFactory.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/service/SXNeedService.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/developWriterModel.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/SVNCheck.java
@@ -13,13 +14,16 @@
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/MetaModel.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/service/SvnCheckService.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/ProjectModel.java
+/Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/controller/SynchronizController.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/controller/ExcelCheckController.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/util/StyleExcelHandler.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/service/SXProjectInfoService.java
+/Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/QuartzSynchProject.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/ExcelListener.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/RedisPoolConditional.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/controller/WebSocketController.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/DDRModel.java
+/Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/ProjectInfo.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/ProjectListRead.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/AuditDownload.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/Request.java
@@ -29,4 +33,5 @@
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/MaintainModel.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/ProjectListModel.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/Swagger2.java
+/Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/ProjectSyncJob.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/realListMoel.java

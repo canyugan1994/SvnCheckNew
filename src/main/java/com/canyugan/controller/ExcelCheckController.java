@@ -826,12 +826,14 @@ public class ExcelCheckController
 							JSONArray sx_project = sxProjectInfoService.sendServiceRequest();
 							List<String> pronameList = new ArrayList<String>();
 							List<String> pronumList = new ArrayList<String>();
+							List<String> pronum_nameList = new ArrayList<String>();
 							for (int i = 0; i < sx_project.size(); i++) {
 								JSONObject ob = sx_project.getJSONObject(i);
 								String proname = ob.getString("projectName");
 								String pronum = ob.getString("projectCodeNum");
 								pronameList.add(proname);
 								pronumList.add(pronum);
+								pronum_nameList.add(pronum + "_" + project_name);
 							}
 
 							String[] project_name_single = project_name.split("、");
@@ -849,6 +851,10 @@ public class ExcelCheckController
 								}
 								if (pronumList.contains(project_num_single[i]) == false) {
 									result.put("error", "导入的项目编号不一致，请重新确认");
+									return result;
+								}
+								if (!pronum_nameList.contains(project_num_single[i] + "_" + project_name_single[i])) {
+									result.put("error", "导入的项目编号与名称不一致，请重新确认");
 									return result;
 								}
 							}
@@ -1030,11 +1036,12 @@ public class ExcelCheckController
 								}
 							}
 						}
-						for (int project_index = 0; project_index < p_num.length; project_index++) {
+					for (int project_index = 0; project_index < p_num.length; project_index++) {
 							Map<String, Object> innerData = new HashMap<String, Object>();
 							innerData.put("checkTable", data_develop);
-							check_map.put(p_num[project_index], innerData);
+							check_map.put(p_num[project_index] + "-" + p_name[project_index], innerData);
 							// 项目名
+							innerData.put("projectnum", p_num[project_index]);
 							innerData.put("projectname", p_name[project_index]);
 							// 项目类别
 							innerData.put("projectClass", project_class);

@@ -9,4 +9,6 @@ public class AuditDownload
 {
 	private Integer id;
 	private String reportName;
+	
+	
 }

@@ -18,6 +18,49 @@
     </properties>
     
      <dependencies>
+     	
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+     	
+     	<!-- dynamic proxy -->
+		<dependency>
+		    <groupId>cglib</groupId>
+		    <artifactId>cglib</artifactId>
+		    <version>3.2.10</version>
+		</dependency>
+		
+        <!-- aop runtime -->
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjrt</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+		
+		<!-- dynamic waaver -->
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjweaver</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+        
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+    	
+    	<dependency>
+	         <groupId>org.quartz-scheduler</groupId>
+	         <artifactId>quartz</artifactId>
+	         <version>2.2.1</version>
+	    </dependency>
+	    
+	    <dependency>
+	        <groupId>org.quartz-scheduler</groupId>
+	        <artifactId>quartz-jobs</artifactId>
+	        <version>2.2.1</version>
+	    </dependency>
     	
     	<!-- for excel file -->
 		<!-- https://mvnrepository.com/artifact/com.alibaba/easyexcel -->
@@ -26,7 +69,6 @@
 		    <artifactId>easyexcel</artifactId>
 		    <version>1.1.2-beta5</version>
 		</dependency>
-		
     	
     	<!-- https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit -->
 		<dependency>
@@ -41,7 +83,6 @@
 			<version>1.9.2</version>
 		</dependency>
 
-		
 		<!-- for use mybatis ,create by mybatis official -->
 		<dependency>
 		    <groupId>org.mybatis.spring.boot</groupId>

@@ -1,11 +1,14 @@
 package com.canyugan.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.canyugan.dao.SvnCheckDao;
+import com.canyugan.pojo.ProjectInfo;
 import com.canyugan.pojo.Request;
 
 /**
@@ -29,4 +32,19 @@ public class SvnCheckService
 		return svnCheckDao.getLoading(request_id);
 	}
 	
+	//双速项目编号相关信息
+	public List<String> getAllProjectCode(){
+		return svnCheckDao.getAllProjectCode();
+	}
+	
+	//双速项目全部信息
+	public List<ProjectInfo> getAllProject(){
+		return svnCheckDao.getAllProject();
+	}
+
+	//新增项目
+	@Transactional
+	public void addNewProjects(List<ProjectInfo> add_to_db_project) {
+		svnCheckDao.batchInsertProject(add_to_db_project);
+	}
 }

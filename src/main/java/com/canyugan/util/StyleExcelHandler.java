@@ -27,8 +27,12 @@ public class StyleExcelHandler implements WriteHandler
 	 *   template cutResult
 	 */
 	Map<String, Map<Object, Map<String, Object>>> structer;
+	int total_lx = 0;
+	int total_wh = 0;
 	public StyleExcelHandler(Map<String, Map<Object, Map<String, Object>>> structer) {
 		this.structer = structer;
+		this.total_lx = total_lx;
+		this.total_wh = total_wh;
 	}
 //	private static AtomicInteger lx_num = new AtomicInteger(1);
 //	private static AtomicInteger wh_num = new AtomicInteger(1);
@@ -59,16 +63,20 @@ public class StyleExcelHandler implements WriteHandler
     			lx_num += 1;
     			project_template_kv = structer.get("研发类").get(lx_num);
 //    			lx_num.incrementAndGet();
+    			if (i == structer.get("研发类").size() + 1) {
+					row.setHeight((short)2500);
+				}
+    			
     		}else if(row.getSheet().getSheetName().equals("维护类项目")){
     			wh_num += 1;
     			project_template_kv = structer.get("维护类").get(wh_num);
-    			
+    			if (i == structer.get("维护类").size() + 1) {
+					row.setHeight((short)2500);
+				}
     		}
 		} catch (Exception e) {
 			LOG .info("row exception:" + e.getMessage());
 		}
-    	
-    	
     	
     }
     
@@ -82,12 +90,12 @@ public class StyleExcelHandler implements WriteHandler
     	totalFont.setFontName("宋体");
     	
     	if ("审计总体情况".equals(cell.getSheet().getSheetName())) {
-    		 cellStyle.setBorderBottom(BorderStyle.THIN);
-		     cellStyle.setBorderLeft(BorderStyle.THIN);
-		     cellStyle.setBorderTop(BorderStyle.THIN);
-		     cellStyle.setBorderRight(BorderStyle.THIN);
-		     cellStyle.setAlignment(HorizontalAlignment.CENTER);
-		     cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//    		 cellStyle.setBorderBottom(BorderStyle.THIN);
+//		     cellStyle.setBorderLeft(BorderStyle.THIN);
+//		     cellStyle.setBorderTop(BorderStyle.THIN);
+//		     cellStyle.setBorderRight(BorderStyle.THIN);
+//		     cellStyle.setAlignment(HorizontalAlignment.CENTER);
+//		     cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
     		if (cell.getRowIndex() == 0) {
     	        cellStyle.setAlignment(HorizontalAlignment.CENTER);
     	        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -97,7 +105,7 @@ public class StyleExcelHandler implements WriteHandler
 			}else if (cell.getRowIndex() != 0 && i == 0) {
     			cellStyle.setAlignment(HorizontalAlignment.LEFT);
      	        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			}else if (cell.getRowIndex() != 0 && i == 0) {
+			}else if (cell.getRowIndex() != 0 && i != 0) {
 				cellStyle.setAlignment(HorizontalAlignment.CENTER);
     	        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			}
@@ -111,13 +119,14 @@ public class StyleExcelHandler implements WriteHandler
 		}else if ("研发类项目".equals(cell.getSheet().getSheetName())) {
 			
     		if (cell.getRowIndex() == 0) {
-    			cellStyle.setBorderBottom(BorderStyle.THIN);
- 		        cellStyle.setBorderLeft(BorderStyle.THIN);
- 		        cellStyle.setBorderTop(BorderStyle.THIN);
- 		        cellStyle.setBorderRight(BorderStyle.THIN);
- 		        cellStyle.setAlignment(HorizontalAlignment.CENTER);
- 		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+//    			cellStyle.setBorderBottom(BorderStyle.THIN);
+// 		        cellStyle.setBorderLeft(BorderStyle.THIN);
+// 		        cellStyle.setBorderTop(BorderStyle.THIN);
+// 		        cellStyle.setBorderRight(BorderStyle.THIN);
+// 		        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+// 		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
     			totalFont.setColor(IndexedColors.WHITE.getIndex());
+    			
     			if (i <= 9 | i == 63) {
     				cellStyle.setFillForegroundColor(IndexedColors.DARK_YELLOW.getIndex());
                 	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);                	 
@@ -139,19 +148,25 @@ public class StyleExcelHandler implements WriteHandler
                 	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				}				
 			}else {
-    			if (cell.getRowIndex() <= structer.get("研发类").size()  ) {
-    		        cellStyle.setBorderBottom(BorderStyle.THIN);
-    		        cellStyle.setBorderLeft(BorderStyle.THIN);
-    		        cellStyle.setBorderTop(BorderStyle.THIN);
-    		        cellStyle.setBorderRight(BorderStyle.THIN);
-    		        cellStyle.setAlignment(HorizontalAlignment.CENTER);
-    		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-				}
-    			if (cell.getRowIndex() == structer.get("研发类").size() + 1 ) {
+				if (cell.getRowIndex() == structer.get("研发类").size() + 1) {
+    				cellStyle.setBorderBottom(BorderStyle.NONE);
+     		        cellStyle.setBorderLeft(BorderStyle.NONE);
+     		        cellStyle.setBorderTop(BorderStyle.THIN);
+     		        cellStyle.setBorderRight(BorderStyle.NONE);
+     		        cellStyle.setAlignment(HorizontalAlignment.LEFT);
+     		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+     		        
+     		       
+				}else if (cell.getRowIndex() == structer.get("研发类").size() + 2 ) {
     		        cellStyle.setAlignment(HorizontalAlignment.LEFT);
     		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 				}
-    			
+//    			
+				if (cell.getRowIndex() == -1) {
+					cellStyle.setBorderBottom(BorderStyle.THICK);
+					
+					
+				}
     			if (i == 1 || i == 2 || i == 7 || i == 8) {
     				cellStyle.setAlignment(HorizontalAlignment.LEFT);
          	        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -161,9 +176,9 @@ public class StyleExcelHandler implements WriteHandler
         			try {
         				cut_value = (Integer) project_template_kv.get(String.valueOf(i));
 					} catch (ClassCastException e) {
-						LOG.info("-->class【 获取具体项目的某个位置的数字出错 cut_value:" + (cut_value == null) + "】");
+						LOG.info("-->class研发类【 获取具体项目的某个位置的数字出错 cut_value:" + (cut_value == null) + "】");
 					}catch (NullPointerException e) {
-						LOG.info("-->null【 获取具体项目的某个位置的数字出错 cut_value:" + (cut_value == null) + "】");
+						LOG.info("-->null研发类【 获取具体项目的某个位置的数字出错 cut_value:" + (cut_value == null) + "】");
 					}
             		if(i == 10 ) {
             			if (cut_value == 2) {
@@ -577,9 +592,13 @@ public class StyleExcelHandler implements WriteHandler
     			} catch (Exception e) {
     				System.out.println("-->【 涂色异常：" + e.getMessage() + " 】");
     			}
+    			
     		}
-//    		if (cell.getRowIndex() == lx_num  ) {
-//    			cellStyle.setBorderBottom(BorderStyle.NONE);
+    		
+//    		CellRangeAddress region = new CellRangeAddress(structer.get("研发类").size() + 1, structer.get("研发类").size() + 1, 0, 60);
+//	        cell.getSheet().addMergedRegion(region);
+//    		if (cell) {
+//    			cellStyle.setBorderBottom(BorderStyle.THICK);
 //    	        cellStyle.setBorderLeft(BorderStyle.NONE);
 //    	        cellStyle.setBorderTop(BorderStyle.NONE);
 //    	        cellStyle.setBorderRight(BorderStyle.NONE);
@@ -614,19 +633,17 @@ public class StyleExcelHandler implements WriteHandler
                 	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				}				
 			}else {
-    			if (cell.getRowIndex() <= structer.get("维护类").size()  ) {
-    		        cellStyle.setBorderBottom(BorderStyle.THIN);
-    		        cellStyle.setBorderLeft(BorderStyle.THIN);
-    		        cellStyle.setBorderTop(BorderStyle.THIN);
-    		        cellStyle.setBorderRight(BorderStyle.THIN);
-    		        cellStyle.setAlignment(HorizontalAlignment.CENTER);
-    		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-				}
-    			if (cell.getRowIndex() == structer.get("维护类").size() + 1 ) {
-    		        cellStyle.setAlignment(HorizontalAlignment.LEFT);
-    		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-				}
-    			
+    			if (cell.getRowIndex() == structer.get("维护类").size() + 1) {
+				cellStyle.setBorderBottom(BorderStyle.NONE);
+ 		        cellStyle.setBorderLeft(BorderStyle.NONE);
+ 		        cellStyle.setBorderTop(BorderStyle.THIN);
+ 		        cellStyle.setBorderRight(BorderStyle.NONE);
+ 		        cellStyle.setAlignment(HorizontalAlignment.LEFT);
+ 		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);		       
+			}else if (cell.getRowIndex() == structer.get("维护类").size() + 2 ) {
+		        cellStyle.setAlignment(HorizontalAlignment.LEFT);
+		        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+			}
     			if (i == 1 || i == 2 || i == 7 || i == 8) {
     				cellStyle.setAlignment(HorizontalAlignment.LEFT);
          	        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -636,9 +653,9 @@ public class StyleExcelHandler implements WriteHandler
     				try {
             			 cut_value = (Integer) project_template_kv.get(String.valueOf(i));
 					} catch (ClassCastException e) {
-						LOG.info("-->class【 获取具体项目的某个位置的数字出错 cut_value:" + (cut_value == null) + "】");
+						LOG.info("-->class维护类【 获取具体项目的某个位置的数字出错 cut_value:" + (cut_value == null) + "】");
 					}catch (NullPointerException e) {
-						LOG.info("-->null【 project_kv:" + project_template_kv + ",index:" + i + "】");
+						LOG.info("-->null维护类【 project_kv:" + project_template_kv + ",index:" + i + "】");
 					}
         			if(i == 9 ) {
             			if (cut_value == 2) {
@@ -990,10 +1007,7 @@ public class StyleExcelHandler implements WriteHandler
     			}
             		
 		}
-		}
-	
-    	
-    	
+		} 
     	cellStyle.setFont(totalFont);
         cell.getRow().getCell(i).setCellStyle(cellStyle);
     	
@@ -1001,16 +1015,16 @@ public class StyleExcelHandler implements WriteHandler
 
 
     /**
-      * 实际中如果直接获取原单元格的样式进行修改, 最后发现是改了整行的样式, 因此这里是新建一个样* 式
+      * 实际中如果直接获取原单元格的样式进行修改, 最后发现是改了整行的样式, 因此这里是新建一个样式
       */
     private CellStyle createStyle(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
-//        cellStyle.setBorderBottom(BorderStyle.THIN);
-//        cellStyle.setBorderLeft(BorderStyle.THIN);
-//        cellStyle.setBorderTop(BorderStyle.THIN);
-//        cellStyle.setBorderRight(BorderStyle.THIN);
-//        cellStyle.setAlignment(HorizontalAlignment.CENTER);
-//        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         return cellStyle;
     }
 }
