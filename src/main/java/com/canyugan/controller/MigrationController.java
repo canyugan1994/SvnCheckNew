@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -82,12 +84,17 @@ public class MigrationController
 	private String svn_save_path;
 	@Autowired
 	private SvnCheckService svnCheckService;
+	@Autowired
+	private JedisPool JedisPool;//redis连接池
 	
 	@ApiModel(value = "Migration", description = "")
 	@Data
 	static class Migration 
 	{
-		@ApiModelProperty(value =  "projectIds" ,name = "勾选项目集合" ,example = "[\"PJ-LX-2018-002-001-人工智能平台运营\",\"PJ-LX-2019-003-002-onesight人工智能平台运营\"]")
+		@ApiModelProperty(value = "userId", name = "用户id", dataType = "string", example = "A167347")
+		private String user_id;
+		@ApiModelProperty(value =  "projectIds" ,name = "勾选项目集合" ,
+				example = "[\"PJ-LX-2018-002-001-人工智能平台运营\",\"PJ-LX-2019-003-002-onesight人工智能平台运营\"]")
 		private JSONArray projectIds;
 	}
 
@@ -97,7 +104,7 @@ public class MigrationController
 	 * @param request
 	 * @return
 	 */
-	@ApiOperation("svn文档迁移接口")
+	@ApiOperation(value = "svn文档迁移接口",notes = "四种状态 0待迁移 1迁移中 2迁移完成 3迁移失败")
 	@RequestMapping(value = { "/svnCheck/svnFileMigration" }, method = { RequestMethod.POST }, produces = {"application/json;charset=utf8" })
 	@ResponseBody
 	public JSONObject getAuditReport(@RequestBody Migration request) 
@@ -151,10 +158,46 @@ public class MigrationController
 			LOG.info("-->【 双速需求文档库信息接口和用户勾选迁移项目信息匹配后的项目信息：" + JSONObject.toJSON(all_project_needMove) + " 】");
 			if(all_project_needMove.size() == 0) {
 				result.put("status","error");
-				result.put("message","匹配项目数量为0 无法进行后续迁移");
+				result.put("message","勾选项目和校验库的项目信息匹配成功数量为0 无法进行后续迁移");
 				return result;
 			}
-			final ThreadPoolExecutor pool = new ThreadPoolExecutor(3, 3, 0, TimeUnit.MILLISECONDS,new LinkedBlockingQueue());
+			/**
+			 * 维护一个hash结构的数据 存储在redis中
+			 * 20190722113027userid
+			 * 	project_key1 0/1
+			 *  project_key2 0/1
+			 *  ...
+			 *  0待迁移 1迁移中 2迁移完成 3迁移失败
+			 */
+			Map<String, String> hash_project_migration = new HashMap<String, String>();
+			Set<String> p_key = all_project_needMove.keySet();
+			Iterator<String> iterator_key = p_key.iterator();
+			while(iterator_key.hasNext()) {
+				hash_project_migration.put(iterator_key.next(), "1");
+			}
+			//当前用户本次迁移redis key
+			final String migration_key = new DateUtil().currentDateTime() + request.getUser_id();
+			Jedis jedis = null;
+			try {
+				jedis = JedisPool.getResource();
+				String resp_redis = jedis.hmset(migration_key, hash_project_migration);//设置每个项目的初始迁移状态
+				if(!"OK".equals(resp_redis)) {
+					result.put("status","error");
+					result.put("message","当前用户迁移项目的项目状态保存至redis失败 请联系管理员");
+					jedis.close();
+					return result;
+				}
+				LOG.info("-->【 当前用户迁移项目的项目状态保存至redis成功 】");
+				jedis.close();
+			} catch (Exception e) {
+				LOG.info("-->【 项目状态保存至redis出错，错误信息：" + e.getMessage() + "】");
+				result.put("status","error");
+				result.put("message","项目状态保存至redis出错 请联系管理员");
+				return result;
+			}
+			
+			//迁移线程池
+			final ThreadPoolExecutor pool = new ThreadPoolExecutor(6, 6, 0, TimeUnit.MILLISECONDS,new LinkedBlockingQueue());
 			/**
 			 * 迁移需求库到目标库立项类
 			 * 	本线程 负责立项类项目迁移
@@ -205,7 +248,7 @@ public class MigrationController
 					 SVNClientManager dist_clientManager = null;//目标库
 					 SVNRepository    dist_repository = null;ISVNAuthenticationManager dist_authManager = null;
 					 try {
-						//需求库
+						 //需求库
 						 DAVRepositoryFactory.setup();
 					     ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
 					     need_clientManager = SVNClientManager.newInstance((DefaultSVNOptions)options,need_svn_username,need_svn_password);
@@ -218,11 +261,11 @@ public class MigrationController
 						return "error";
 					 }
 					 try {
-						//目标库
+						 //目标库
 						 DAVRepositoryFactory.setup();
 					     ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
 					     dist_clientManager = SVNClientManager.newInstance((DefaultSVNOptions)options,dist_svn_username,dist_svn_password);
-					   //low level api ; for list file or dir
+					     //low level api ; for list file or dir
 					     dist_repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(dist_svn_url));
 						 dist_authManager = SVNWCUtil.createDefaultAuthenticationManager(dist_svn_username, dist_svn_password);
 						 dist_repository.setAuthenticationManager(dist_authManager);
@@ -236,6 +279,7 @@ public class MigrationController
 					try {
 						SVNUpdateClient need_updateClient = need_clientManager.getUpdateClient();//需求库下载客户端
 						SVNCommitClient dist_commitClient = dist_clientManager.getCommitClient();//目标库提交文档客户端
+						//遍历勾选的项目PJ-LX-云上卡中心-2019-001
 						for(String project_key:project_keys) 
 						{
 							if(!project_key.contains("LX")) {
@@ -349,6 +393,12 @@ public class MigrationController
 																														dist_svn_url+"/立项类项目/"+lx_project_url_direct+
 																														"/"+other_direct+"/"+tf_dir+"/"+single_file.getName()),null,false);
 																										LOG.info("-->立项类项目迁移线程【 文档：" + single_file + " 迁移完成】");
+																										/**
+																										 * 设置redis中的项目迁移状态
+																										 *  0待迁移 1迁移中 2迁移完成 3迁移失败
+																										 */
+																										Jedis jedis = JedisPool.getResource();
+																										jedis.hset(migration_key, project_key, "2");
 																							    	} catch (Exception e) {
 																										LOG.info("-->立项类项目迁移线程【 迁移需求库文档到目标库失败，失败信息:" + e.getMessage() +  " 】");
 																									}
@@ -437,6 +487,7 @@ public class MigrationController
 					}
 				}
 				
+				@SuppressWarnings("deprecation")
 				@Override
 				public String call() throws Exception 
 				{
@@ -683,6 +734,41 @@ public class MigrationController
 			 */
 			Future<String> tc_thread = pool.submit(new Callable<String>()
 			{
+				public List<String> getSvnBaseInfo(SVNRepository repository, String path,String type,String source) throws SVNException {
+					List<String> result = new LinkedList<String>();
+					list(repository, path, result,type,source);
+					return result;
+				}
+				//打印对应目录
+				public void list(SVNRepository repository, String path, List<String> result,String type,String source) {
+					try {
+						Collection entries = repository.getDir(path, -1L, null, (Collection) null);
+						Iterator iterator = entries.iterator();
+						while (iterator.hasNext()) {
+							SVNDirEntry entry = (SVNDirEntry) iterator.next();
+							if (entry.getKind() == SVNNodeKind.DIR) {
+								if(type.equals("dir")) {
+									if(source.equals("need")) {
+										result.add(need_svn_url + (path.equals("") ? entry.getName() : (path + "/" + entry.getName())));
+									}else if(source.equals("dist")) {
+										result.add(dist_svn_url + (path.equals("") ? entry.getName() : (path + "/" + entry.getName())));
+									}
+								}
+							}else if(entry.getKind() == SVNNodeKind.FILE) {
+								if(type.equals("file")) {
+									if(source.equals("need")) {
+										result.add(need_svn_url + (path.equals("") ? entry.getName() : (path + "/" + entry.getName())));
+									}else if(source.equals("dist")) {
+										result.add(dist_svn_url + (path.equals("") ? entry.getName() : (path + "/" + entry.getName())));
+									}
+								}
+							}
+						}
+					} catch (Exception e) {
+						LOG.info("-->维护类项目迁移线程【 获取目录下面的目录或者文件[" + path + "]失败，失败信息：" + e.getMessage() + " 】");
+					}
+				}
+				
 				@Override
 				public String call() throws Exception 
 				{
@@ -713,6 +799,9 @@ public class MigrationController
 					}else {
 						LOG.info("-->【 TC文档迁移失败 】");
 					}
+					/**
+					 * 勾选项目重新设置数据库迁移状态和迁移时间
+					 */
 					pool.shutdown();//关闭线程池
 					LOG.info("-->【 线程池关闭 欢迎下次再次进行迁移 】");
 					return "success";
@@ -724,6 +813,9 @@ public class MigrationController
 			result.put("message","服务器繁忙 请连续管理员");
 			return result;
 		}
+		result.put("status","success");
+		//待迁移 迁移中 迁移完成 迁移失败
+		result.put("message","迁移任务提交成功 后续可以刷新本页面进行迁移进度查询");
 		return result;
 	}
 }

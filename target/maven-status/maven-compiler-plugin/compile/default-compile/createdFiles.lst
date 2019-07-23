@@ -31,6 +31,7 @@ com/canyugan/pojo/AuditDownload.class
 com/canyugan/controller/MigrationController$Migration.class
 com/canyugan/controller/ExcelCheckController$1.class
 com/canyugan/SVNCheck.class
+com/canyugan/configuration/MyJobFactory.class
 com/canyugan/util/DateUtil.class
 com/canyugan/controller/MigrationController.class
 com/canyugan/pojo/developWriterModel.class

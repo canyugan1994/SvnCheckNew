@@ -164,14 +164,26 @@ public class MaintainModel extends BaseRowModel{
 
 	    @ExcelProperty(value = "重大模块、功能、批处理等补充说明",index = 51)
 	    private Integer supplementary_explanation;
+	    
+	    @ExcelProperty(value = "必交文档目标值",index = 52)
+	    private Object must_target;
+	    
+	    @ExcelProperty(value = "必交文档当前值" ,index = 53)
+	    private Object must_now;
 
-	    @ExcelProperty(value = "必交文档提交率",index = 52)
+	    @ExcelProperty(value = "选交文档目标值",index = 54)
+	    private Object option_target;
+
+	    @ExcelProperty(value = "选交文档当前值",index = 55)
+	    private Object option_now;
+
+	    @ExcelProperty(value = "必交文档提交率",index = 56)
 	    private String must_rate;
 
-	    @ExcelProperty(value = "选交文档提交率",index = 53)
+	    @ExcelProperty(value = "选交文档提交率",index = 57)
 	    private String selected_rate;
 
-	    @ExcelProperty(value = "备注",index = 54)
+	    @ExcelProperty(value = "备注",index = 58)
 	    private String remarks;
 	    
 	    private Integer cutResult;

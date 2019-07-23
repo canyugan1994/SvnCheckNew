@@ -102,7 +102,7 @@ public class developWriterModel extends BaseRowModel {
     @ExcelProperty(value = "启动会议纪要",index = 30)
     private Integer start_meetingminutes;
     
-    @ExcelProperty(value = "项目进度计划.mmp" ,index = 31)
+    @ExcelProperty(value = "项目进度计划" ,index = 31)
     private Integer project_schedule;
 
     @ExcelProperty(value = "项目里程碑",index = 32)
@@ -189,16 +189,28 @@ public class developWriterModel extends BaseRowModel {
     @ExcelProperty(value = "变更影响分析",index = 59)
     private Integer change_impactaanalysis;
 
-    @ExcelProperty(value = "重大模块、功能、批处理等补充说明",index = 50)
+    @ExcelProperty(value = "重大模块、功能、批处理等补充说明",index = 60)
     private Integer supplementary_explanation;
+    
+    @ExcelProperty(value = "必交文档目标值",index = 61)
+    private Object must_target;
+    
+    @ExcelProperty(value = "必交文档当前值" ,index = 62)
+    private Object must_now;
 
-    @ExcelProperty(value = "必交文档提交率",index = 61)
+    @ExcelProperty(value = "选交文档目标值",index = 63)
+    private Object option_target;
+
+    @ExcelProperty(value = "选交文档当前值",index = 64)
+    private Object option_now;
+
+    @ExcelProperty(value = "必交文档提交率",index = 65)
     private String must_rate;
 
-    @ExcelProperty(value = "选交文档提交率",index = 62)
+    @ExcelProperty(value = "选交文档提交率",index = 66)
     private String selected_rate;
 
-    @ExcelProperty(value = "备注",index = 63)
+    @ExcelProperty(value = "备注",index = 67)
     private String remarks;
 
     

@@ -32,13 +32,9 @@ public class ProjectSyncJob implements Job
     @Override
     public void execute(JobExecutionContext arg0) throws JobExecutionException 
     {
-    	System.out.println(sxProjectInfoService == null);
-    	System.out.println(svnCheckService == null);
     	log.info("-->定时调度器【 开始同步 同步时间点： " + new DateUtil().currentDateTime() + "】");
         try {
-        	log.info("-->【 step 1 】");
 			JSONArray temp_array = sxProjectInfoService.sendServiceRequest();
-			log.info("-->【 step 2 】");
 			if(temp_array == null) {
 				log.info("-->定时调度器【 双速项目信息接口调用失败 本次无法同步双速项目信息 】");
 				return;
@@ -46,9 +42,7 @@ public class ProjectSyncJob implements Job
 			//开始同步至数据库
 			//step 1 :获取数据库已有项目信息 根据项目编号进行唯一性区分
 			List<ProjectInfo> add_to_db_project = new LinkedList<ProjectInfo>();
-			log.info("-->【 step 3 】");
 			List<String> db_projectCode = svnCheckService.getAllProjectCode();//数据库已存在项目的项目编号
-			log.info("-->【 step 4 】");
 			int sx_project_size = temp_array.size();
 			JSONObject temp = new JSONObject();
 			for(int index = 0;index < sx_project_size;index++) 
@@ -77,11 +71,12 @@ public class ProjectSyncJob implements Job
 			}
 			//step 2:如果新增项目的list集合不为空 就执行插入操作
 			if(add_to_db_project.size() > 0) {
-				log.info("-->【 step 5 】");
 				svnCheckService.addNewProjects(add_to_db_project);
-				log.info("-->【 step 6 】");
+				log.info("-->定时调度器【 更新数量：" + add_to_db_project.size() + "数据库同步完成 】");
+			}else {
+				log.info("-->定时调度器【 暂无更新 本次同步结束 】");
 			}
-			log.info("-->定时调度器【 数据库同步完成 】");
+			
 		} catch (Exception e) {
 			log.info("-->定时调度器【 定时任务执行失败 失败信息:" + e.getMessage() + " 】");
 		}

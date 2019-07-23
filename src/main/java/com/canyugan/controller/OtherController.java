@@ -70,7 +70,7 @@ public class OtherController
 	 * 获取双速的项目信息
 	 * @return
 	 */
-	@ApiOperation("[获取双速项目信息] new_version:form database")
+	@ApiOperation(value = "[获取双速项目信息] new_version:form database",notes = "迁移状态：0待迁移 1迁移中 2迁移完成 3迁移失败")
 	@RequestMapping(value = { "/svnCheck/getAllProjectInfo" }, method = { RequestMethod.GET }, produces = {"application/json;charset=utf8" })
 	@ResponseBody
 	public JSONObject getAllProjectInfo() 

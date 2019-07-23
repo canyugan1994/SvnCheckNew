@@ -101,7 +101,7 @@ public class ExcelCheckController
 	@Value("${save_path}")
 	private String save_path;
 	@Value("${execute_num}")
-	private Integer execute_num;//同时检查的人数
+	private Integer execute_num;//限制同时检查的人数
 
 	/**
 	 * 查看用户的任务线程池
@@ -729,7 +729,7 @@ public class ExcelCheckController
 							+ sheets.get(index - 1).getSheetName() + " 】");
 					if (!sheets.get(1).getSheetName().equals("研发项目裁剪模板")
 							|| !sheets.get(2).getSheetName().equals("维护项目裁剪模板")) {
-						result.put("error", "裁剪表sheet顺序不符合标准");
+						result.put("error", "裁剪表sheet顺序与裁剪表模板不符");
 						return result;
 					}
 					try {
@@ -818,7 +818,7 @@ public class ExcelCheckController
 							}
 							if (project_codeNum == null || project_name == null || project_num == null
 									|| project_class == null) {
-								result.put("error", "项目编号、项目名称、项目数量三者之未填写或者A列列名与模版名称不符合 请检查。");
+								result.put("error", project_name + " :项目编号、项目名称、项目数量三者未填写或者A列列名与裁剪表模版不相符 请检查。");
 								return result;
 							}
 
@@ -833,7 +833,7 @@ public class ExcelCheckController
 								String pronum = ob.getString("projectCodeNum");
 								pronameList.add(proname);
 								pronumList.add(pronum);
-								pronum_nameList.add(pronum + "_" + project_name);
+								pronum_nameList.add(pronum + "-" + proname);
 							}
 
 							String[] project_name_single = project_name.split("、");
@@ -841,29 +841,29 @@ public class ExcelCheckController
 							if (project_name_single.length != project_num_single.length
 									|| project_name_single.length != Integer.valueOf(project_num)
 									|| project_num_single.length != Integer.valueOf(project_num)) {
-								result.put("error", "请在项目编号和项目名称之间使用顿号隔开，或者项目编号、项目名称、项目数量对应不上 请检查");
+								result.put("error", project_name + " :请在项目编号和项目名称之间使用顿号隔开，或者项目编号、项目名称、项目数量对应不上 请检查");
 								return result;
 							}
 							for (int i = 0; i < project_name_single.length; i++) {
 								if (pronameList.contains(project_name_single[i]) == false) {
-									result.put("error", "导入的项目名称不一致，请重新确认");
+									result.put("error", project_name + " :导入的项目名称不一致，请重新确认");
 									return result;
 								}
 								if (pronumList.contains(project_num_single[i]) == false) {
-									result.put("error", "导入的项目编号不一致，请重新确认");
+									result.put("error", project_name + " :导入的项目编号不一致，请重新确认");
 									return result;
 								}
-								if (!pronum_nameList.contains(project_num_single[i] + "_" + project_name_single[i])) {
-									result.put("error", "导入的项目编号与名称不一致，请重新确认");
+								if (pronum_nameList.contains(project_num_single[i] + "-" + project_name_single[i]) == false) {
+									result.put("error", project_name + " :导入的项目编号与名称不一致，请重新确认");
 									return result;
 								}
 							}
 							if (project_codeNum.contains("LX") && project_class.equals("维护类")) {
-								result.put("error", "导入的项目类别不正确，请重新确认");
+								result.put("error", project_name + " :导入的项目类别不正确，请重新确认");
 								return result;
 							}
 							if (project_codeNum.contains("WH") && project_class.equals("研发类")) {
-								result.put("error", "导入的项目类别不正确，请重新确认");
+								result.put("error", project_name + " :导入的项目类别不正确，请重新确认");
 								return result;
 							}
 							// 检测项目类别和是否设计采购、是否设计新系统的对应关系
@@ -872,13 +872,13 @@ public class ExcelCheckController
 						// 公共校验
 						if ("研发类".equals(project_class)) {
 							if (project_isNewSystem == null || project_isPurchase == null) {
-								result.put("error", "研发类项目未发现填写【项目是否设计采购】和【项目是否设计新系统】或者A列列名与模版提供名称不符合");
+								result.put("error", project_name + " :研发类项目未发现填写【项目是否设计采购】和【项目是否设计新系统】或者A列列名与模版提供名称不符合");
 								return result;
 							}
 						}
 						if ("维护类".equals(project_class)) {
 							if (project_isNewSystem != null || project_isPurchase != null) {
-								result.put("error", "维护类项目不允许填写【项目是否设计采购】和【项目是否设计新系统】");
+								result.put("error", project_name + " :维护类项目不允许填写【项目是否设计采购】和【项目是否设计新系统】");
 								return result;
 							}
 						}
@@ -907,7 +907,7 @@ public class ExcelCheckController
 							CheckDataModel d9 = (CheckDataModel) data_develop.get(59);
 
 							if (!d1.getTemplateName().contains("技术立项申请单")) {
-								result.put("error", "裁剪表结构不符合标准，请检查");
+								result.put("error", project_name + " :裁剪表结构不符合标准，请检查");
 								return result;
 							}
 
@@ -974,7 +974,7 @@ public class ExcelCheckController
 						if (project_class.equals("维护类")) {
 							CheckDataModel d1 = (CheckDataModel) data_maintain.get(0);
 							if (!d1.getTemplateName().contains("进度计划")) {
-								result.put("error", "裁剪表结构不符合标准，请检查");
+								result.put("error", project_name + " :裁剪表结构不符合标准，请检查");
 								return result;
 							}
 						}
@@ -983,21 +983,21 @@ public class ExcelCheckController
 							// 裁剪结果校验
 							CheckDataModel develop = (CheckDataModel) object;
 							if (!develop.getTemplateName().startsWith("《") || !develop.getTemplateName().endsWith("》")) {
-								result.put("error", "裁剪表项目模板填写不规范，请检查");
+								result.put("error", develop.getTemplateName() +" :裁剪表项目模板填写不规范，请检查");
 								return result;
 							}
 							if (develop.getCutGuide() == null) {
-								result.put("error", "项目裁剪指南填写不完整，请补充");
+								result.put("error", develop.getTemplateName() +" :项目裁剪指南填写不完整，请补充");
 								return result;
 							}
 							if (develop.getCutResult() == null) {
-								result.put("error", "项目裁剪结果填写不完整，请补充");
+								result.put("error", project_name + " :项目裁剪结果填写不完整，请补充");
 								return result;
 							}
 							if (develop.getCutGuide().equals("1") && develop.getCutResult() != 2) {
 								if (develop.getReasonDescription() == null) {
 									if (!"TC平台管理".equals(develop.getNotes()) && !"双速平台管理".equals(develop.getNotes())) {
-										result.put("error", "裁剪结果不合理，请重新确认裁剪结果或补充原因说明");
+										result.put("error", project_name + " :裁剪结果不合理，请重新确认裁剪结果或补充原因说明");
 										return result;
 									}
 								}
@@ -1013,7 +1013,7 @@ public class ExcelCheckController
 							p_name = LX_pronameList.toArray(new String[LX_pronameList.size()]);
 							if (p_num.length > 1 || p_name.length > 1) {
 								if (p_num.length != p_name.length) {
-									result.put("error", "项目编号、项目名称、项目数量对应不上 请检查");
+									result.put("error", project_name +" :项目编号、项目名称、项目数量对应不上 请检查");
 									return result;
 								}
 							}
@@ -1022,7 +1022,7 @@ public class ExcelCheckController
 							p_name = WH_pronameList.toArray(new String[WH_pronameList.size()]);
 							if (p_num.length > 1 || p_name.length > 1) {
 								if (p_num.length != p_name.length) {
-									result.put("error", "项目编号、项目名称、项目数量对应不上 请检查");
+									result.put("error",  project_name +" :项目编号、项目名称、项目数量对应不上 请检查");
 									return result;
 								}
 							}
@@ -1031,12 +1031,12 @@ public class ExcelCheckController
 							p_name = project_name.split("、");
 							if (p_num.length > 1 || p_name.length > 1) {
 								if (p_num.length != p_name.length || p_num.length != Integer.valueOf(project_num)) {
-									result.put("error", "项目编号、项目名称、项目数量对应不上 请检查");
+									result.put("error", project_name + " :项目编号、项目名称、项目数量对应不上 请检查");
 									return result;
 								}
 							}
 						}
-					for (int project_index = 0; project_index < p_num.length; project_index++) {
+						for (int project_index = 0; project_index < p_num.length; project_index++) {
 							Map<String, Object> innerData = new HashMap<String, Object>();
 							innerData.put("checkTable", data_develop);
 							check_map.put(p_num[project_index] + "-" + p_name[project_index], innerData);
