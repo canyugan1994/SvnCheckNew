@@ -65,6 +65,7 @@ public class SXProjectInfoService
 					return_result_single.put("projectCodeNum", temp.get("projectId"));
 					return_result.add(return_result_single);
 				}
+				body.close();//关闭body 防止leak
 				return return_result;
 			}
 			LOG.info("-->【 双速项目信息接口失败 】");

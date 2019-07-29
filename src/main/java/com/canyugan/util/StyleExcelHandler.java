@@ -115,7 +115,6 @@ public class StyleExcelHandler implements WriteHandler
     		if (cell.getRowIndex() == 15) {
 				totalFont.setBold(true);
 			}
-    	
 		}else if ("研发类项目".equals(cell.getSheet().getSheetName())) {
 			
     		if (cell.getRowIndex() == 0) {

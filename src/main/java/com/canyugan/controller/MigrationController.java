@@ -107,7 +107,7 @@ public class MigrationController
 	@ApiOperation(value = "svn文档迁移接口",notes = "四种状态 0待迁移 1迁移中 2迁移完成 3迁移失败")
 	@RequestMapping(value = { "/svnCheck/svnFileMigration" }, method = { RequestMethod.POST }, produces = {"application/json;charset=utf8" })
 	@ResponseBody
-	public JSONObject getAuditReport(@RequestBody Migration request) 
+	public JSONObject svnFileMigration(@RequestBody Migration request) 
 	{
 		JSONObject result = new JSONObject();
 		try {
@@ -446,6 +446,7 @@ public class MigrationController
 					return "success";
 				}
 			});
+			
 			/**
 			 * 迁移需求库到目标库维护类
 			 * 本线程 负责维护类项目迁移
@@ -669,7 +670,6 @@ public class MigrationController
 																				      "/" + rqn_direct + "/" + rqn_dir_direct), 
 																				      move_path, SVNRevision.HEAD, SVNRevision.HEAD, "", true, true);
 																			//如果目标库存在文档 则迁移单位选择目录会导致全部失败 ，故本次迁移目标为单个文档
-																			
 																		    File[] files = move_path.listFiles();
 																		    if(files.length !=0) {
 																		    	for(File single_file:files) 
@@ -715,7 +715,7 @@ public class MigrationController
 														}
 													}
 												}
-												break;//
+												break;
 											}
 										}
 									}
@@ -729,7 +729,8 @@ public class MigrationController
 					return "success";
 				}
 			});
-			/**TODO
+			
+			/**
 			 * 迁移Tc库到目标库维护类
 			 */
 			Future<String> tc_thread = pool.submit(new Callable<String>()
@@ -772,10 +773,44 @@ public class MigrationController
 				@Override
 				public String call() throws Exception 
 				{
+					 SVNClientManager dist_clientManager = null;//目标库
+					 SVNRepository    dist_repository = null;
+					 ISVNAuthenticationManager dist_authManager = null;
+					 try {
+						 //目标库
+						 DAVRepositoryFactory.setup();
+					     ISVNOptions options = SVNWCUtil.createDefaultOptions(true);
+					     dist_clientManager = SVNClientManager.newInstance((DefaultSVNOptions)options,dist_svn_username,dist_svn_password);
+					     //low level api
+					     dist_repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(dist_svn_url));
+						 dist_authManager = SVNWCUtil.createDefaultAuthenticationManager(dist_svn_username, dist_svn_password);
+						 dist_repository.setAuthenticationManager(dist_authManager);
+					 } catch (Exception e) {
+						LOG.info("-->TC文档维护类迁移线程【 svn服务器连接失败，失败信息：" + e.getMessage() + " 】");
+						return "error";
+					 }
+					
 					try {
+						/**
+						 * PJ-LX-2018-002-001-人工智能平台运营
+						 *     RQN-2018-IT039-0039
+						 *     RQN-2018-IT039-0040
+						 */
+						//迁移逻辑
+						Set<String> project_keys = all_project_needMove.keySet();//待迁移项目的集合
+						Set<Map<String, String>> temp_map_list = new HashSet<Map<String,String>>();//每个项目对应的RQN集合
+						SVNCommitClient dist_commitClient = dist_clientManager.getCommitClient();//目标库提交文档、创建目录客户端 
 						
+						for(String project_key:project_keys) 
+						{
+							if(!project_key.contains("WH")) {
+								LOG.info("-->TC文档维护类迁移线程【 抱歉，非WH维护项目，本线程不负责迁移 】");
+								continue;
+							}
+							
+						}
 					} catch (Exception e) {
-						LOG.info("-->TC文档迁移线程【 线程发生错误，错误信息：" + e.getMessage()  + " 】返回守护线程error信息");
+						LOG.info("-->TC文档维护类迁移线程【 线程发生错误，错误信息：" + e.getMessage()  + " 】返回守护线程error信息");
 						return "error";
 					}
 					return "success";

@@ -1,15 +1,12 @@
 package com.canyugan.service;
 
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -56,6 +53,7 @@ public class SXNeedService
 						return_result.add(return_result_single);
 					}
 				}
+				body.close();//关闭body 防止leak
 				return return_result;
 			}
 			LOG.info("-->【 双速需求文档接口调用失败 】");
