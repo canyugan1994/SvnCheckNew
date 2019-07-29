@@ -1,8 +1,6 @@
 package com.canyugan.util;
 
-
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -14,7 +12,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.excel.event.WriteHandler;
@@ -115,6 +112,7 @@ public class StyleExcelHandler implements WriteHandler
     		if (cell.getRowIndex() == 15) {
 				totalFont.setBold(true);
 			}
+    	
 		}else if ("研发类项目".equals(cell.getSheet().getSheetName())) {
 			
     		if (cell.getRowIndex() == 0) {
@@ -186,10 +184,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 11 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -197,19 +192,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 12 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 13 ) {
@@ -219,9 +208,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 14 ) {
             			if (cut_value == 2) {
@@ -230,19 +216,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 15 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 16 ) {
@@ -252,9 +232,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 17 ) {
             			if (cut_value == 2) {
@@ -263,10 +240,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}          			
             		}else if(i == 18 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -274,19 +248,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 19 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 20 ) {
@@ -296,19 +264,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 21 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 22 ) {
@@ -318,9 +280,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 23 ) {
             			if (cut_value == 2) {
@@ -329,19 +288,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 24 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 25 ) {
@@ -351,19 +304,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 26 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 27 ) {
@@ -373,19 +320,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 28 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 29 ) {
@@ -395,10 +336,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 30 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -406,10 +344,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 31 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -417,19 +352,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 32 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 33 ) {
@@ -439,10 +368,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 34 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -450,10 +376,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 35 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -461,10 +384,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 36 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -472,10 +392,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 37 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -483,10 +400,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 38 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -494,10 +408,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 39 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -505,10 +416,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 40 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -516,19 +424,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 41 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 42 ) {
@@ -538,9 +440,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 43 ) {
             			if (cut_value == 2) {
@@ -549,19 +448,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 44 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 45 ) {
@@ -571,9 +464,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 46 ) {
             			if (cut_value == 2) {
@@ -582,10 +472,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 47 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -593,10 +480,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 48) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -604,10 +488,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 49) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -615,10 +496,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 50 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -626,10 +504,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 51 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -637,19 +512,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 52 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 53 ) {
@@ -659,9 +528,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 54 ) {
             			if (cut_value == 2) {
@@ -669,9 +535,6 @@ public class StyleExcelHandler implements WriteHandler
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 55 ) {
@@ -681,9 +544,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 56) {
             			if (cut_value == 2) {
@@ -692,19 +552,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 57) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 58) {
@@ -714,9 +568,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 59) {
             			if (cut_value == 2) {
@@ -725,19 +576,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 60) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}
@@ -816,9 +661,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 10 ) {
             			if (cut_value == 2) {
@@ -827,19 +669,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 11 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 12 ) {
@@ -849,10 +685,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 13 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -860,10 +693,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 14 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -871,10 +701,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 15 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -882,10 +709,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 16 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -893,10 +717,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 17 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -904,10 +725,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 18 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -915,19 +733,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 19 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 20 ) {
@@ -937,9 +749,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 21 ) {
             			if (cut_value == 2) {
@@ -947,9 +756,6 @@ public class StyleExcelHandler implements WriteHandler
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 22 ) {
@@ -959,9 +765,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 23 ) {
             			if (cut_value == 2) {
@@ -970,10 +773,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 24 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -981,10 +781,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 25 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -992,19 +789,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 26 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 27 ) {
@@ -1014,19 +805,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 28 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 29 ) {
@@ -1036,9 +821,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 30 ) {
             			if (cut_value == 2) {
@@ -1046,9 +828,6 @@ public class StyleExcelHandler implements WriteHandler
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 31 ) {
@@ -1058,9 +837,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 32 ) {
             			if (cut_value == 2) {
@@ -1069,10 +845,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 33 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -1080,10 +853,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 34 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -1091,19 +861,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 35 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 36 ) {
@@ -1113,9 +877,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 37 ) {
             			if (cut_value == 2) {
@@ -1123,9 +884,6 @@ public class StyleExcelHandler implements WriteHandler
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 38 ) {
@@ -1135,19 +893,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 39 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 40 ) {
@@ -1157,9 +909,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 41 ) {
             			if (cut_value == 2) {
@@ -1167,9 +916,6 @@ public class StyleExcelHandler implements WriteHandler
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 42 ) {
@@ -1179,9 +925,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 43 ) {
             			if (cut_value == 2) {
@@ -1190,19 +933,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 44 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 45 ) {
@@ -1212,9 +949,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 46 ) {
             			if (cut_value == 2) {
@@ -1222,9 +956,6 @@ public class StyleExcelHandler implements WriteHandler
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 47 ) {
@@ -1234,9 +965,6 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}            			
             		}else if(i == 48) {
             			if (cut_value == 2) {
@@ -1245,10 +973,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 49) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -1256,10 +981,7 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}           			
             		}else if(i == 50 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
@@ -1267,19 +989,13 @@ public class StyleExcelHandler implements WriteHandler
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}            			
+						}          			
             		}else if(i == 51 ) {
             			if (cut_value == 2) {
             				cellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
                         	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}else if (cut_value == 0) {
 							cellStyle.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
-	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-						}else if (cut_value == 3) {
-							cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
 	                    	cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 						}
             		}

@@ -759,26 +759,22 @@ public class ReportController
 				maintain_dataTeam[teamNum][2] += pop_result;
 				maintain_dataTeam[teamNum][3] += option_num;
 				maintain_sumnum[teamNum] += 1;
-
 			}
-
 		}
 		// lx
 		if (develop_num != 0) {
 			developWriterModel lx_note = new developWriterModel();
 			lx_note.setProject_id("说明：\r\n" + "1. 红色背景——代表项目裁剪结果是必须提交的文档；\r\n" + "2. 蓝色背景——代表项目裁剪结果是选交的文档；\r\n"
-					+ "3.灰色背景——代表项目裁剪结果是不适用；\r\n" +"4. 数字1——代表已提交文档；\r\n" + "5. 数字0——代表未提交文档；");
+					+ "3. 数字1——代表已提交文档；\r\n" + "4. 数字0——代表未提交文档；");
 			checkList.add(lx_note);
 		}
 		if (maintain_num1 !=0 ) {
 			MaintainModel wh_note = new MaintainModel();
 			wh_note.setProject_id("说明：\r\n" + "1. 红色背景——代表项目裁剪结果是必须提交的文档；\r\n" + "2. 蓝色背景——代表项目裁剪结果是选交的文档；\r\n"
-					+ "3.灰色背景——代表项目裁剪结果是不适用；\r\n"  + "4. 数字1——代表已提交文档；\r\n" + "5. 数字0——代表未提交文档；");
+					+ "3. 数字1——代表已提交文档；\r\n" + "4. 数字0——代表未提交文档；");
 			checkList1.add(wh_note);
 		}
-		
-		LOG.info("structer" + structer);
-		
+
 		for (int j = 0; j < 13; j++) {
 			List<Double> develop_cal = new ArrayList<Double>();
 			List<Double> maintain_cal = new ArrayList<Double>();
@@ -881,7 +877,7 @@ public class ReportController
 
 		}
 		LOG.info("-->【 开始写入 】");
-		LOG.info("structer" + structer);
+		//LOG.info("structer" + structer);
 		
         Sheet calculation_sheet = new Sheet(1, 1, CalculationModel.class);
 		Sheet develop_sheet = new Sheet(2, 1, developWriterModel.class);

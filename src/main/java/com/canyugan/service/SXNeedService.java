@@ -53,7 +53,7 @@ public class SXNeedService
 						return_result.add(return_result_single);
 					}
 				}
-				body.close();//关闭body 防止leak
+				body.close();//关闭body 防止leak泄露
 				return return_result;
 			}
 			LOG.info("-->【 双速需求文档接口调用失败 】");

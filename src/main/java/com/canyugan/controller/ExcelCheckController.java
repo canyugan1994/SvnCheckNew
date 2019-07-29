@@ -5,6 +5,7 @@ import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.canyugan.configuration.ThreadPoolFactory;
 import com.canyugan.pojo.CheckDataModel;
 import com.canyugan.pojo.ExcelListener;
 import com.canyugan.pojo.MetaModel;
@@ -52,6 +53,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.tmatesoft.sqljet.core.internal.lang.SqlParser.bool_return;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -102,6 +104,7 @@ public class ExcelCheckController
 	private String save_path;
 	@Value("${execute_num}")
 	private Integer execute_num;//限制同时检查的人数
+	private DateUtil dateUtil = new DateUtil();
 
 	/**
 	 * 查看用户的任务线程池
@@ -253,7 +256,8 @@ public class ExcelCheckController
 		/**
 		 * 开始正式执行svn检查
 		 */
-		final ThreadPoolExecutor pool = new ThreadPoolExecutor(4, 4, 0, TimeUnit.MILLISECONDS,new LinkedBlockingQueue());
+		final ThreadPoolExecutor pool = 
+				new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,new LinkedBlockingQueue(1),new ThreadPoolFactory("SvnCheck" + "-" + user_id));
 		/**
 		 * step1:拼装项目和RQN的关系
 		 * 形如
@@ -399,11 +403,16 @@ public class ExcelCheckController
 				//成功标记 false失败 true成功
 				boolean need_success = false;
 				boolean dist_success = false;
+				boolean tc_success = false;
 				//获取redis连接
 				Jedis jedis = JedisPool.getResource();
-				//开始需求库 需求库仅检查2个字段 为了防止百分比提早计算完毕 先查需求库
+				
 				try {
-					String year = new DateUtil().currentDateTime().substring(0, 4);//获取当前执行年份
+					/**
+					 * step 1
+					 * 开始需求库 需求库仅检查2个字段 为了防止百分比提早计算完毕 先查需求库
+					 */
+					String year = dateUtil.currentDateTime().substring(0, 4);//获取当前执行年份
 					List<String> depart_url = getSvnFileBaseInfoDto_need(repository_need, "");//获取svn根路径下的部门
 					for (String depart : depart_url) 
 					{
@@ -487,12 +496,31 @@ public class ExcelCheckController
 				} catch (Exception e) {
 					LOG.info("-->需求库 【 比对svn文件信息失败，失败信息：" + e.getMessage() + " 】");
 				}
-				//需求库出错 整体失败
+				
+				//需求库出错 整体失败 后续检查不再进行
 				if(need_success != true) {
 					return "error";
 				}
-				//开始目标库
+				
 				try {
+					/**
+					 * step 2
+					 * 开始TC文档检查 tc包含测试文档
+					 */
+				} catch (Exception e) {
+					LOG.info("-->TC文件系统库 【 TC检查失败，失败信息：" + e.getMessage() + " 】");
+				}
+				
+				//TC测试文档检查失败 整体失败 后续目标库不再进行检查
+//				if(tc_success != true) {
+//					return "error";
+//				}
+				
+				try {
+					/**
+					 * step 3
+					 * 开始目标库
+					 */
 					String redis_check_map = jedis.get(full_key);
 					//解析json格式字符串
 					JSONObject final_check_map = JSONObject.parseObject(redis_check_map);
@@ -552,11 +580,11 @@ public class ExcelCheckController
 				} catch (Exception e) {
 					LOG.info("-->" + user_id + "【 目标库 比对svn文件信息失败，失败信息：" + e.getMessage() + " 】");
 				}
-				
-				//收尾
-				if(dist_success == true && need_success == true) {
+				//目标库检查
+				if(dist_success == true) {
 					return "success";
 				}else {
+					//如果目标库失败 整体失败
 					return "error";
 				}
 			}

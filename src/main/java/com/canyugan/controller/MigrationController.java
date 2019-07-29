@@ -86,6 +86,7 @@ public class MigrationController
 	private SvnCheckService svnCheckService;
 	@Autowired
 	private JedisPool JedisPool;//redis连接池
+	private DateUtil dateUtil = new DateUtil();
 	
 	@ApiModel(value = "Migration", description = "")
 	@Data
@@ -176,7 +177,7 @@ public class MigrationController
 				hash_project_migration.put(iterator_key.next(), "1");
 			}
 			//当前用户本次迁移redis key
-			final String migration_key = new DateUtil().currentDateTime() + request.getUser_id();
+			final String migration_key = dateUtil.currentDateTime() + request.getUser_id();
 			Jedis jedis = null;
 			try {
 				jedis = JedisPool.getResource();
@@ -286,7 +287,7 @@ public class MigrationController
 								LOG.info("-->立项类项目迁移线程【 抱歉，非LX立项项目，本线程不负责迁移 】");
 								continue;
 							}
-							String year = new DateUtil().currentDateTime().substring(0, 4);//获取当前执行年份
+							String year = dateUtil.currentDateTime().substring(0, 4);//获取当前执行年份
 							List<String> depart_url = getSvnBaseInfo(need_repository, "","dir","need");//获取svn根路径下的部门路径
 							for (String depart : depart_url) 
 							{
@@ -535,7 +536,7 @@ public class MigrationController
 								LOG.info("-->维护类项目迁移线程【 抱歉，非WH维护项目，本线程不负责迁移 】");
 								continue;
 							}
-							String year = new DateUtil().currentDateTime().substring(0, 4);//获取当前执行年份
+							String year = dateUtil.currentDateTime().substring(0, 4);//获取当前执行年份
 							List<String> depart_url = getSvnBaseInfo(need_repository, "","dir","need");//获取svn根路径下的部门路径
 							for (String depart : depart_url) 
 							{

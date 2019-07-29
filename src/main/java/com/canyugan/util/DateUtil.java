@@ -1,5 +1,6 @@
 package com.canyugan.util;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,8 +10,16 @@ import java.util.Date;
  */
 public class DateUtil 
 {
+	private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() 
+	{
+		@Override
+		protected DateFormat initialValue() {
+			return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+	};
+	
 	public String currentDateTime()
 	{
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		return df.get().format(new Date());
 	}
 }
