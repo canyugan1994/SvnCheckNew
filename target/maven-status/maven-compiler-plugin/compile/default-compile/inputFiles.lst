@@ -5,6 +5,7 @@
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/controller/OtherController.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/CalculationModel.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/MyJobFactory.java
+/Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/configuration/ThreadPoolFactory.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/service/SXNeedService.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/pojo/developWriterModel.java
 /Users/caorui/svnfilecheck/SvnCheck/src/main/java/com/canyugan/SVNCheck.java

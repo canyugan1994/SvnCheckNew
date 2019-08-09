@@ -26,15 +26,12 @@
     	select * from project_info 
     </select>
     
-    <!-- <insert id="batchInsertArticle">
-    	insert into document(source_link,content_source,
-    	                     content_time,title,
-    	                     content,img,fastdfs_link)
-    	 values
-    	 <foreach collection="documents" item="document" separator=",">
-    	 		(#{document.source_link},#{document.content_source},
-    	 		 #{document.content_time},#{document.title},
-    	 		 #{document.content},#{document.img},#{document.fastdfs_link})
-    	 </foreach>
-    </insert> -->
+    <update id="updateProjectMoveStatusAndDate">
+    	update project_info set 
+    		migrationStatus = #{status}
+    		<if test="date != null and date != ''">  
+    			,migrationDate = #{date}
+			</if>  
+    	where concat(projectId,'-',projectName) = #{project_code_name}
+    </update>
 </mapper>

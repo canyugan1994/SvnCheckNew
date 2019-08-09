@@ -47,4 +47,10 @@ public class SvnCheckService
 	public void addNewProjects(List<ProjectInfo> add_to_db_project) {
 		svnCheckDao.batchInsertProject(add_to_db_project);
 	}
+	
+	//更改项目的迁移状态
+	@Transactional
+	public void updateProjectMoveStatusAndDate(String project_code_name,String status,String date) {
+		svnCheckDao.updateProjectMoveStatusAndDate(project_code_name,status,date);
+	}
 }

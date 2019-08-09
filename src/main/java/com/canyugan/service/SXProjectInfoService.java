@@ -68,9 +68,13 @@ public class SXProjectInfoService
 				body.close();//关闭body 防止leak
 				return return_result;
 			}
-			LOG.info("-->【 双速项目信息接口失败 】");
+			if(LOG.isInfoEnabled()) {
+				LOG.info("-->【 双速项目信息接口失败 】");
+			}
 		} catch (Exception e) {
-			LOG.info("-->【 双速项目信息接口失败，失败信息:" + e.getMessage() + " 】");
+			if(LOG.isInfoEnabled()) {
+				LOG.info("-->【 双速项目信息接口失败，失败信息:" + e.getMessage() + " 】");
+			}
 		}
 		return null;
 	}

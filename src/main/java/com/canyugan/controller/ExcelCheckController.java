@@ -12,7 +12,6 @@ import com.canyugan.pojo.MetaModel;
 import com.canyugan.service.SXNeedService;
 import com.canyugan.service.SXProjectInfoService;
 import com.canyugan.util.DateUtil;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,6 +20,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -53,7 +53,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.tmatesoft.sqljet.core.internal.lang.SqlParser.bool_return;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNNodeKind;
@@ -62,7 +61,6 @@ import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -161,7 +159,7 @@ public class ExcelCheckController
 		String user_id = quitCheck.getRequest_id();
 		//如果根据用户id获取对应任务线程池存在
 		if(monitor.get(user_id) != null) {
-			LOG.info("-->【 request_id:" + user_id + "正在终止检查任务 】");
+			LOG.info("-->【 request_id["+user_id+"]正在终止检查任务 】");
 			monitor.get(user_id).shutdownNow();//立即关闭线程池 不做善后处理
 			monitor.remove(user_id);//去除该用户的监控
 			//去掉占用的坑
@@ -179,11 +177,11 @@ public class ExcelCheckController
 	/**
 	 * 整体步骤 
 	 * 		step 1:预检查excel 校验 通过进行step 2，否则退出 
-	 * 		step 2:三个检查点 svn需求文档库 检查需求和TF文档
-	 * tc平台接口(给的是测试报告) SIT和UAT报告(给的是需求报告) svn目标库(给的是目标库，包含一个项目的所有阶段文档)
-	 * 整体步骤 step 1:预检查excel 校验 通过进行step 2，否则退出 step 2:三个检查点 svn需求文档库 检查需求和TF文档
-	 * tc平台接口 SIT和UAT报告 svn目标库
-	 * 
+	 * 		step 2:三个检查点 
+	 * 				svn需求文档库 检查需求 
+	 * 				TC文档 检查测试文档
+	 * 			    目标库(立项类、维护类) 检查所有类型文档
+	 * tc平台接口(给的是测试报告) 需求文档库(给的是需求报告) svn目标库(包含一个项目的所有阶段文档)
 	 * @param request
 	 * @return
 	 */
@@ -191,7 +189,8 @@ public class ExcelCheckController
 	@ApiOperation(value = "svn文档检查", notes = "请求体格式form-data")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "userId", value = "用户id", dataType = "string", example = "A167347"),
-			@ApiImplicitParam(name = "projectIds", value = "勾选项目集合", example = "[\"PJ-LX-2018-002-001-人工智能平台运营\",\"PJ-LX-2019-003-002-onesight人工智能平台运营\"]"),
+			@ApiImplicitParam(name = "projectIds", value = "勾选项目集合", 
+			                  example = "[\"PJ-LX-2018-002-001-人工智能平台运营\",\"PJ-LX-2019-003-002-onesight人工智能平台运营\"]"),
 			@ApiImplicitParam(name = "file", value = "MultipartFile", paramType = "MultipartFile") })
 	@RequestMapping(value = { "/svnCheck/svnCheckFile" },method={RequestMethod.POST },produces={"application/json;charset=utf8" })
 	@ResponseBody
@@ -208,12 +207,12 @@ public class ExcelCheckController
 			return result;
 		}
 		//excel检查
-		List<MultipartFile> files;
+		List<MultipartFile> files = null;
 		try {
 			files = ((MultipartHttpServletRequest) request).getFiles("file");
 		} catch (Exception e) {
 			result.put("status", "error");
-			result.put("message", "未曾在请求中发现要检查的excel文件 必传");
+			result.put("message", "未曾在请求中发现要检查的excel文件 必传哦亲");
 			return result;
 		}
 		//获取检查过后封装的数据结构
@@ -230,25 +229,26 @@ public class ExcelCheckController
 			Integer current_exe_person_num = max_person_num.get();
 			if(current_exe_person_num >= execute_num) {
 				result.put("status", "error");
-				result.put("message", "当前执行人数已经超过配置的最大执行人数 当前队列内执行任务人数：" + current_exe_person_num);
-				LOG.info("-->" + user_id + "【 当前执行人数已经超过配置的最大执行人数 当前队列内执行任务人数：[" + current_exe_person_num + "] 】");
+				result.put("message", "当前执行人数已经超过配置的最大执行人数 当前队列内执行任务人数["+current_exe_person_num+"]");
+				LOG.info("-->"+user_id+"【 当前执行人数已经超过配置的最大执行人数 当前队列内执行任务人数["+current_exe_person_num+"] 】");
 				return result;
 			}else {
 				check_map = (Map) check_result.get("data");
-				LOG.info("-->" + user_id + "【 项目裁剪信息预检查成功,裁剪表检查数据check_map[" + JSONObject.toJSON(check_map).toString() + " ] 】");
+				LOG.info("-->"+user_id+"【 项目裁剪信息预检查成功,裁剪表检查数据check_map["+JSONObject.toJSON(check_map).toString()+"] 】");
 			}
 		}
 		/**
 		 * 数据存入redis
 		 */
+		//单次检查的key 为后面的webcosket进度检查服务 还有报表下载
 		final String full_key = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + user_id;
-		String status = this.JedisPool.getResource().set(full_key, JSONObject.toJSON(check_map).toString());
+		String status = JedisPool.getResource().set(full_key, JSONObject.toJSON(check_map).toString());
 		if ("ok".equals(status) || "OK".equals(status)) {
-			LOG.info("-->" + user_id + "【 项目裁剪信息预检查完毕，信息存入redis成功 】");
+			LOG.info("-->"+user_id+"【 项目裁剪信息预检查完毕 信息存入redis成功 】");
 		} else {
-			LOG.info("-->" + user_id + "【 检查信息数据落redis库失败 请稍后重试或者联系管理员");
+			LOG.info("-->"+user_id+"【 检查信息数据落redis库失败 请稍后重试或者联系管理员");
 			result.put("status", "error");
-			result.put("message","ip:[" + request.getRemoteAddr() + "] 用户id:[" + user_id + "]的excel检查信息数据落redis库失败 请稍后重试或者联系管理员");
+			result.put("message","ip["+request.getRemoteAddr()+"] 用户id["+user_id+"]的excel检查信息数据落redis库失败 请稍后重试或者联系管理员");
 			monitor.remove(user_id);//去除监控
 			max_person_num.decrementAndGet();//去掉占用的坑
 			return result;
@@ -256,48 +256,63 @@ public class ExcelCheckController
 		/**
 		 * 开始正式执行svn检查
 		 */
+		//创建异步任务线程池 给线程创建线程名 方便后续查问题
 		final ThreadPoolExecutor pool = 
-				new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS,new LinkedBlockingQueue(1),new ThreadPoolFactory("SvnCheck" + "-" + user_id));
-		/**
-		 * step1:拼装项目和RQN的关系
-		 * 形如
-		 * PJ-LX-2018-002-001-人工智能平台运营
-		 * 		RQN-2018-IT039-0039
-		 * 		RQN-2018-IT039-0040
-		 * 		RQN-2018-IT039-0041
-		 */
-		//从双速需求信息接口获取数据 一个项目可能对应多个RQN
-		JSONArray need_project = sxNeedService.sendServiceRequest();
-		//如果接口请求发生各种错误导致接口响应数据为null 直接给前端返回错误
+				new ThreadPoolExecutor(3, 3, 0, TimeUnit.MILLISECONDS,new LinkedBlockingQueue(1),new ThreadPoolFactory(full_key));
+		JSONArray need_project = sxNeedService.sendServiceRequest();//从双速需求信息接口获取数据
 		if(need_project == null) {
 			result.put("status","error");
-			result.put("message","双速需求库信息接口调用失败 获取数据为空 请稍后再试 或联系管理员");
+			result.put("message","双速需求库信息接口调用失败 请稍后再试 或联系管理员");
 			return result;
 		}
-		final Map<String, Set<String>> need_projectName = new HashMap<String, Set<String>>();
-		Set<String> tempSet = null;
-		int need_project_length = need_project.size();
-		JSONObject temp = new JSONObject();
-		for (int need_project_index = 0; need_project_index < need_project_length; need_project_index++) 
-		{
-			//取出接口中的每一个项目和RQN
-			temp = (JSONObject) need_project.get(need_project_index);
-			tempSet = need_projectName.get(temp.getString("projectName"));
-			if(tempSet == null) {
-				//该项目没有被设置过项目和RQN
-				tempSet = new HashSet<String>();
-			}
-			tempSet.add(temp.getString("project_num"));
-			need_projectName.put(temp.getString("projectName"), tempSet);
-		}
 		/**
-		 * step2:目标库检查
+		 * step1:拼装项目和RQN的关系
+		 * 一个项目可能对应很多个需求编号
+		 * example：
+		 * 	PJ-LX-2018-002-001-人工智能平台运营
+		 *     RQN-2018-IT039-0039 Release-20190222
+		 *     RQN-2018-IT039-0040 Release-20190222
 		 */
-		Future<String> dist_thread_result = pool.submit(new Callable<String>() 
+		Map<String,Set<Map<String, String>>> all_project_needCheck = new HashMap<String, Set<Map<String, String>>>();
+		Set<Map<String, String>> info_rqn_project_set = null;
+		Map<String, String> info_rqn_project = null;
+		JSONObject temp = new JSONObject();
+		String current_select_project = null;
+		
+		List<String> project_list = new LinkedList<String>();
+		project_list.addAll(check_map.keySet());//需要检查的所有项目数量
+		
+		int project_array_len = check_map.keySet().size();//获取需要检查的项目名集合
+		int need_project_len = need_project.size();//双速接口所有项目的数量
+		//遍历检查项目
+		for(int index_project = 0;index_project < project_array_len;index_project++) {
+			current_select_project = project_list.get(index_project);
+			info_rqn_project_set = new HashSet<Map<String,String>>();
+			//遍历双速需求接口
+			for(int index_need_project = 0;index_need_project < need_project_len;index_need_project++) {
+				temp = need_project.getJSONObject(index_need_project);
+				if(temp.getString("projectName") != null && temp.getString("projectName").equals(current_select_project)) {
+					info_rqn_project = new HashMap<String, String>();
+					info_rqn_project.put("project_num",temp.getString("project_num"));//需求编号
+					info_rqn_project.put("projectVersion",temp.getString("projectVersion"));//投产窗口 也叫修复的版本
+					info_rqn_project_set.add(info_rqn_project);
+				}
+			}
+			all_project_needCheck.put(current_select_project,info_rqn_project_set);
+		}
+		LOG.info("-->"+user_id+"【 双速需求文档库信息接口和用户检查项目信息匹配后的项目信息["+JSONObject.toJSON(all_project_needCheck)+" 】");
+		if(all_project_needCheck.size() == 0) {
+			result.put("status","error");
+			result.put("message","勾选项目和校验库的项目信息匹配成功数量为0 无法进行后续检查");
+			return result;
+		}
+		
+		/**
+		 * TC、需求库、目标库（维护类、立项类）整体检查
+		 */
+		Future<String> asyc_task = pool.submit(new Callable<String>() 
 		{
-			/**
-			 * 目标库
-			 */
+			//目标库
 			public List<String> getSvnFileBaseInfoDto(SVNRepository repository, String path, boolean isGetNext)
 					throws SVNException {
 				List<String> result = new LinkedList<String>();
@@ -320,13 +335,11 @@ public class ExcelCheckController
 						}
 					}
 				} catch (Exception e) {
-					LOG.info("-->" + user_id + " 【 目标库 获取目录下面的文件url失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+"【 目标库 获取目录下面的文件url失败，失败信息["+e.getMessage()+"] 】");
 				}
 			}
 			
-			/**
-			 * 需求库
-			 */
+			//需求库
 			public List<String> getSvnFileBaseInfoDto_need(SVNRepository repository, String path, boolean isGetNext)
 					throws SVNException {
 				List<String> result = new LinkedList<String>();
@@ -352,7 +365,7 @@ public class ExcelCheckController
 						}
 					}
 				} catch (Exception e) {
-					LOG.info("-->" + user_id + " 【 需求库 获取目录下面的目录[" + path + "]失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+"【 需求库 获取目录下面的目录["+path+"]失败，失败信息["+e.getMessage()+"] 】");
 				}
 			}
 
@@ -372,7 +385,7 @@ public class ExcelCheckController
 						}
 					}
 				} catch (Exception e) {
-					LOG.info("-->" + user_id + " 【 需求库 获取目录下面的目录[" + path + "]失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+"【 需求库 获取目录下面的目录["+path+"]失败，失败信息["+e.getMessage()+"] 】");
 				}
 			}
 
@@ -386,7 +399,7 @@ public class ExcelCheckController
 					authManager = SVNWCUtil.createDefaultAuthenticationManager(dist_svn_username,dist_svn_password);
 					repository.setAuthenticationManager(authManager);
 				} catch (Exception e) {
-					LOG.info("-->" + user_id + " 【 目标库 svn服务器连接失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+"【 目标库 svn服务器连接失败，失败信息["+e.getMessage()+"] 】");
 					return "error";
 				}
 				
@@ -397,26 +410,25 @@ public class ExcelCheckController
 					authManager_need = SVNWCUtil.createDefaultAuthenticationManager(need_svn_username, need_svn_password);
 					repository_need.setAuthenticationManager(authManager_need);
 				} catch (Exception e) {
-					LOG.info("-->" + user_id + " 【 需求库 svn服务器连接失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+"【 需求库 svn服务器连接失败，失败信息["+e.getMessage()+"] 】");
 					return "error";
 				}
 				//成功标记 false失败 true成功
 				boolean need_success = false;
-				boolean dist_success = false;
+				boolean dist_lx_success = false;
+				boolean dist_wh_success = false;
 				boolean tc_success = false;
-				//获取redis连接
-				Jedis jedis = JedisPool.getResource();
-				
+				Jedis jedis = JedisPool.getResource();//获取redis连接
 				try {
 					/**
 					 * step 1
-					 * 开始需求库 需求库仅检查2个字段 为了防止百分比提早计算完毕 先查需求库
+					 * 开始需求库 需求库仅检查【需求】、【TF】文档 为了防止百分比提早计算完毕 先查需求库
 					 */
 					String year = dateUtil.currentDateTime().substring(0, 4);//获取当前执行年份
 					List<String> depart_url = getSvnFileBaseInfoDto_need(repository_need, "");//获取svn根路径下的部门
 					for (String depart : depart_url) 
 					{
-						LOG.info("-->" + user_id + " 【 需求库 正在处理部门：" + depart + " 】");
+						LOG.info("-->"+user_id+"【 需求库 正在处理部门["+depart+"] 】");
 						//获取例如 http://182.180.49.163:8080/svn/RQAL/业务管理部/2019 的文档目录信息
 						List<String> rqn_year = getSvnFileBaseInfoDto_need(repository_need,
 								depart.substring(depart.lastIndexOf("/") + 1, depart.length()) + "/" + year);
@@ -424,77 +436,76 @@ public class ExcelCheckController
 						{
 							if (rqn.contains("RQN")) 
 							{
-								Set<String> rqns_needproject_temp = new HashSet<String>();
-								//RQN-2019-BIM002-0053-S08
-								String rqn_direct = rqn.substring(rqn.lastIndexOf("/") + 1, rqn.length());
-								//获取rqn编号下面所有的文档url
-								List<String> rqn_all_doc = getSvnFileBaseInfoDto_need(repository_need,
-										depart.substring(depart.lastIndexOf("/") + 1, depart.length()) + "/" + year + "/" + rqn_direct,true);
-								//项目的key集合 
-								Set<String> keys_needProject = need_projectName.keySet();
-								/**
-								 * 每个RQN在项目中的rqns找一遍 存在就退出循环
-								 */
-								for(String key_project:keys_needProject)
+								Set<Map<String, String>> rqns_needproject_temp = new HashSet<>();
+								String rqn_direct = rqn.substring(rqn.lastIndexOf("/") + 1, rqn.length());//RQN-2019-BIM002-0053-S08
+								Set<String> keys_needProject = all_project_needCheck.keySet();//项目的key集合 
+								for(String key_project:keys_needProject)//每个RQN在项目中的rqns找一遍 存在就退出循环
 								{
-									//拿出RQN号
-									rqns_needproject_temp = need_projectName.get(key_project);
-									if (rqns_needproject_temp.contains(rqn_direct)) 
+									//拿出项目的RQN号和修复的版本
+									rqns_needproject_temp = all_project_needCheck.get(key_project);
+									for(Map<String, String> temp_map:rqns_needproject_temp)
 									{
-										//从redis中读取
-										String redis_check_map = jedis.get(full_key);
-										//解析json格式字符串
-										JSONObject final_check_map = JSONObject.parseObject(redis_check_map);
-										Set<String> redis_project_keySet  = final_check_map.keySet();
-										//开始从redis中读取数据
-										if (redis_project_keySet.contains(key_project)) {
-											LOG.info("-->" + user_id + "【 需求库 项目：[" + key_project + "]和redis中的裁剪表检查项目匹配成功,rqn需求编号：[" + rqn_direct + "] 】");
-											//获取项目对应的裁剪表信息
-											JSONArray project_checkTable = final_check_map.getJSONObject(key_project).getJSONArray("checkTable");
-											int length = project_checkTable.size();
-											for (int project_check_table_index = 0; project_check_table_index < length; project_check_table_index++) 
-											{
-												JSONObject temp = project_checkTable.getJSONObject(project_check_table_index);
-												String template_name = temp.getString("templateName");
-												template_name = template_name.substring(1, template_name.length() - 1);
-												//如果模板名包含TF和需求相关
-												if (template_name.contains("TF") || template_name.contains("tf")
-													|| template_name.contains("Tf") || template_name.contains("tF")
-													|| template_name.contains("需求")) 
+										if (temp_map.get("project_num").contains(rqn_direct))//如果需求编号匹配当前svn目录
+										{
+											//获取rqn编号下面所有的文档url
+											List<String> rqn_all_doc = getSvnFileBaseInfoDto_need(repository_need,
+													depart.substring(depart.lastIndexOf("/") + 1, depart.length()) + "/" + year + "/" + rqn_direct,true);
+											
+											//从redis中读取
+											String redis_check_map = jedis.get(full_key);
+											//解析json格式字符串
+											JSONObject final_check_map = JSONObject.parseObject(redis_check_map);
+											Set<String> redis_project_keySet  = final_check_map.keySet();
+											//开始从redis中读取数据
+											if (redis_project_keySet.contains(key_project)) {
+												LOG.info("-->"+user_id+"【 需求库 项目["+key_project+"]和redis中的裁剪表检查项目匹配成功,rqn需求编号["+rqn_direct+"] 】");
+												//获取项目对应的裁剪表信息
+												JSONArray project_checkTable = final_check_map.getJSONObject(key_project).getJSONArray("checkTable");
+												int length = project_checkTable.size();
+												for (int project_check_table_index = 0; project_check_table_index < length; project_check_table_index++) 
 												{
-													//遍历该rqn下面的所有文档
-													for (String rqn_doc_url : rqn_all_doc) 
+													JSONObject temp = project_checkTable.getJSONObject(project_check_table_index);
+													String template_name = temp.getString("templateName");
+													template_name = template_name.substring(1, template_name.length() - 1);
+													//如果模板名包含TF和需求相关
+													if (template_name.contains("TF") || template_name.contains("tf")
+														|| template_name.contains("Tf") || template_name.contains("tF")
+														|| template_name.contains("需求")) 
 													{
-														//xxx需求分析报告.doc
-														String direct_url = rqn_doc_url.substring(rqn_doc_url.lastIndexOf("/") + 1, rqn_doc_url.length());
-														if (direct_url.contains(template_name)) {
-															LOG.info("-->" + user_id + " 【 需求库 文档：[" + direct_url + "]存在 设置存在标记 】");
-															temp.replace("exist", 1);
+														//遍历该rqn下面的所有文档
+														for (String rqn_doc_url : rqn_all_doc) 
+														{
+															//xxx需求分析报告.doc
+															String direct_url = rqn_doc_url.substring(rqn_doc_url.lastIndexOf("/") + 1, rqn_doc_url.length());
+															if (direct_url.contains(template_name)) {
+																LOG.info("-->"+user_id+"【 需求库 文档["+direct_url+"]存在 设置存在标记 】");
+																temp.replace("exist", 1);
+															}
+															temp.replace("done", 1);
+															project_checkTable.set(project_check_table_index, temp);
 														}
-														temp.replace("done", 1);
-														project_checkTable.set(project_check_table_index, temp);
 													}
 												}
+												LOG.info("-->"+user_id+"【 需求库 项目["+key_project+"]检查完毕 】");
+												String status = jedis.set(full_key, JSONObject.toJSON(final_check_map).toString());
+												if ("ok".equals(status) || "OK".equals(status)) {
+													LOG.info("-->"+user_id+"【 需求库检查线程 更新项目["+key_project+"]完成度信息存入redis成功 更新信息[" + 
+															JSONObject.toJSON(final_check_map).toString()+"] 】");
+												}else{
+													LOG.info("-->"+user_id+"【 需求库检查线程 更新项目["+key_project+"]完成度信息存入redis失败 】");
+												}
+												break;//本次RQN和项目的rqn集合匹配成功 退出在项目中寻找匹配rqn的循环
 											}
-											LOG.info("-->" + user_id + "【 需求库 项目：[" + key_project + "]检查完毕 】");
-											String status = jedis.set(full_key, JSONObject.toJSON(final_check_map).toString());
-											if ("ok".equals(status) || "OK".equals(status)) {
-												LOG.info("-->" + user_id + "【 需求库检查线程 更新项目[" + key_project + "]完成度信息存入redis成功 更新信息：" + 
-														JSONObject.toJSON(final_check_map).toString() + " 】");
-											}else{
-												LOG.info("-->" + user_id + "【 需求库检查线程 更新项目[" + key_project + "]完成度信息存入redis失败 】");
-											}
-											break;//本次RQN和项目的rqn集合匹配成功 退出在项目中寻找匹配rqn的循环
 										}
 									}
 								}
 							}
 						}
 					}
-					LOG.info("-->需求库 检查完毕");
+					LOG.info("-->"+user_id+"【 需求库 检查完毕 】");
 					need_success = true;
 				} catch (Exception e) {
-					LOG.info("-->需求库 【 比对svn文件信息失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+"【 需求库 比对svn文件信息失败，失败信息["+e.getMessage()+"] 】");
 				}
 				
 				//需求库出错 整体失败 后续检查不再进行
@@ -502,40 +513,140 @@ public class ExcelCheckController
 					return "error";
 				}
 				
-				try {
+				try 
+				{
 					/**
 					 * step 2
-					 * 开始TC文档检查 tc包含测试文档
+					 * 开始TC磁盘服务器文档检查 【 sit/uat测试 】文档
+					 * 目录结构：
+					 * 		部门/修复的版本/需求编号/正式的sit&&uat文件
 					 */
+					File first_path = new File(save_path);
+					if(!first_path.exists()) {//如果根目录被删
+						LOG.info("-->"+user_id+" 【 TC文件系统库 TC文档所在的根目录["+first_path.getName()+"]不存在 请检查 本次检查作废 不再继续进行检查 】");
+						return "error";
+					}
+					for(File depart_file:first_path.listFiles()) //遍历部门
+					{
+						String departName = depart_file.getName();//获取部门名称
+						File second_path = new File(save_path+"/"+departName);//获取部门下面的修复的版本
+						if(!second_path.exists()) {//如果目录在文件列出后被删 保证健壮性
+							LOG.info("-->"+user_id+" 【 TC文件系统库 TC文档所在的部门目录["+second_path.getName()+"]不存在 】");
+							continue;
+						}
+						try 
+						{
+							for(File release_version_file:second_path.listFiles())//遍历当前部门下属的修复的版本
+							{
+								String releaseVsesion = release_version_file.getName();//获取修复的版本
+								File third_path = new File(save_path+"/"+departName+"/"+releaseVsesion);//获取修复的版本下面的目录
+								if(!third_path.exists()) {//如果目录在文件列出后被删
+									LOG.info("-->"+user_id+" 【 TC文件系统库 TC文档所属部门["+departName+"]的修复版本["+
+															  			third_path.getName()+"]不存在 】");
+									continue;
+								}
+								try 
+								{
+									for(File rqn_file:third_path.listFiles())//一个rqn编号属于一个项目 一个项目有多个rqn编号
+									{
+										String rqnName = rqn_file.getName();
+										File final_docfile_path = new File(save_path+"/"+departName+"/"+releaseVsesion+"/"+rqnName);
+										if(!final_docfile_path.exists()) {//如果目录在文件列出后被删
+											LOG.info("-->"+user_id+" 【 TC文件系统库 TC文档所属部门["+departName+"]的修复版本["+
+																		third_path.getName()+"]下属的RQN编号["+
+																		final_docfile_path.getName()+"]不存在 】");
+											continue;
+										}
+										String redis_check_map = jedis.get(full_key);//从redis中读取检查项目数据
+										JSONObject final_check_map = JSONObject.parseObject(redis_check_map);//解析json格式字符串
+										Set<String> check_map_project_keys = final_check_map.keySet();//获取项目的key集合
+										Set<Map<String, String>> current_project_info = new HashSet<>();
+										boolean curr_rqn_exit = false;
+										for(String project_key:check_map_project_keys)//遍历需要检查的每个项目
+										{
+											if(curr_rqn_exit) {
+												break;//本次rqn目录已经对应上对应项目 加速循环退出过程
+											}
+											current_project_info = all_project_needCheck.get(project_key);//当前项目对应的rqn编号和修复版本
+											for(Map<String, String> temp_map:current_project_info)//遍历当前项目的map信息
+											{   
+												if(temp_map.get("project_num").equals(rqnName))//如果tc文档库的需求编号和当前项目的需求编号能对应上
+												{
+													curr_rqn_exit = true;//项目和rqn已经对应上
+													//获取项目对应的裁剪表信息
+													JSONArray project_checkTable = final_check_map.getJSONObject(project_key).getJSONArray("checkTable");
+													int length = project_checkTable.size();
+													for (int project_check_table_index = 0; project_check_table_index < length; project_check_table_index++) 
+													{
+														JSONObject temp = project_checkTable.getJSONObject(project_check_table_index);
+														String template_name = temp.getString("templateName");
+														template_name = template_name.substring(1, template_name.length() - 1);
+														for(File tc_file:final_docfile_path.listFiles())//选择检查该需求编号下面的测试文档是否是项目的检查模板
+														{   
+															if(!tc_file.exists()) {
+																LOG.info("-->"+user_id+" 【 TC文件系统库 该文件["+tc_file.getName()+"]可能已经被删除 】");
+																continue;
+															}
+															if (tc_file.getName().contains(template_name)) {//如果tc文件名符合模板名 命中
+																LOG.info("-->"+user_id+" 【 TC文件系统库 命中模板["+template_name+"]设置存在标记为1 】");
+																temp.replace("exist", 1);
+															}
+															temp.replace("done", 1);//不管在不在 处理过 先设置处理标记为1
+															project_checkTable.set(project_check_table_index, temp);//重置该裁剪项到原本位置
+														}
+													}
+													LOG.info("-->"+user_id+"【 TC文件系统库 项目["+project_key+"]检查完毕 】");
+													//更新回redis
+													String status = jedis.set(full_key, JSONObject.toJSON(final_check_map).toString());
+													if ("ok".equals(status) || "OK".equals(status)) {
+														LOG.info("-->"+user_id+"【 TC文件系统库 更新项目["+project_key+"]完成度信息存入redis成功 更新信息[" + 
+																JSONObject.toJSON(final_check_map).toString()+"] 】");
+													}else{
+														LOG.info("-->"+user_id+"【 TC文件系统库 更新项目["+project_key+"]完成度信息存入redis失败 】");
+													}
+													break;
+												}
+											}
+										}
+									}
+								} catch (Exception e) {
+									LOG.info("-->"+user_id+"【 TC文件系统库 处理修复的版本["+releaseVsesion+"]失败,本目录检查失败 】");
+								}
+							}
+						} catch (Exception e) {
+							LOG.info("-->"+user_id+"【 TC文件系统库 处理部门["+departName+"]失败,本目录检查失败 】");
+						}
+					}
+					LOG.info("-->"+user_id+" 【 TC文件系统库 TC文件系统检查完毕 】");
+					tc_success = true;//设置tc检查成功标记
 				} catch (Exception e) {
-					LOG.info("-->TC文件系统库 【 TC检查失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+" 【 TC文件系统库 TC检查失败,失败信息["+e.getMessage()+"] 】");
+					return "error";
 				}
 				
 				//TC测试文档检查失败 整体失败 后续目标库不再进行检查
-//				if(tc_success != true) {
-//					return "error";
-//				}
+				if(tc_success != true) {
+					return "error";
+				}
 				
-				try {
+				try 
+				{
 					/**
 					 * step 3
-					 * 开始目标库
+					 * 开始目标库立项类 所有文档
 					 */
 					String redis_check_map = jedis.get(full_key);
 					//解析json格式字符串
 					JSONObject final_check_map = JSONObject.parseObject(redis_check_map);
 					Set<String> keySet  = final_check_map.keySet();//项目集合
-					LOG.info("-->" + user_id + " 【 目标库 准备要处理裁剪表的项目信息:[" + keySet + "] 】");
+					LOG.info("-->"+user_id+" 【 目标库 准备要处理裁剪表的项目信息["+keySet+"] 】");
 					for (String svn_project_url : keySet) 
 					{
-						LOG.info("-->" + user_id + "【 目标库 正在检查项目:[" + svn_project_url + "] 】");
 						List<String> urls = new LinkedList<String>();
 						if (svn_project_url.contains("LX")) {
+							LOG.info("-->"+user_id+" 【 目标库 正在检查立项类项目项目["+svn_project_url+"] 】");
 							urls = getSvnFileBaseInfoDto(repository, "立项类项目/" + svn_project_url, true);
-							//urls = getSvnFileBaseInfoDto(repository, svn_project_url, true);
 						} else if (svn_project_url.contains("WH")) {
-							//维护类项目暂时不检查
-							LOG.info("-->" + user_id + "【 维护类项目本线程暂时不检查 谢谢 】");
 							continue;
 						}
 						//获取每个项目的检查表
@@ -553,69 +664,132 @@ public class ExcelCheckController
 								{
 									String direct_url = url.substring(url.lastIndexOf("/") + 1, url.length());
 									if (direct_url.contains(template_name)) {
-										LOG.info("-->" + user_id + "【 目标库 命中模板:" + template_name + " 设置存在标记为1 】");
+										LOG.info("-->"+user_id+" 【 目标库 命中模板["+template_name+"]设置存在标记为1 】");
 										temp.replace("exist", 1);
 									}
-									//不管在不在 处理过 先设置处理标记为1
-									temp.replace("done", 1);
-									//重置该裁剪项到原本位置
-									project_checkTable.set(project_check_table_index, temp);
+									temp.replace("done", 1);//不管在不在 处理过 先设置处理标记为1
+									project_checkTable.set(project_check_table_index, temp);//重置该裁剪项到原本位置
 								}
 							}
-							LOG.info("-->" + user_id + "【 项目:[" + svn_project_url + "]检查结束 】");
+							LOG.info("-->"+user_id+" 【 项目["+svn_project_url+"]检查结束 】");
 							String status =jedis.set(full_key,JSONObject.toJSON(final_check_map).toString());
 							if ("ok".equals(status) || "OK".equals(status)) {
-								LOG.info("-->" + user_id + " 【 目标库检查线程 项目[" + svn_project_url + "]svn文档检查完毕，进度更新信息存入redis成功 "
-										+ "更新的数据:" + JSONObject.toJSON(final_check_map).toString()+ " 】");
+								LOG.info("-->"+user_id+" 【 目标库检查线程 项目["+svn_project_url+"]svn文档检查完毕 进度更新信息存入redis成功 "
+										+ "更新的数据["+JSONObject.toJSON(final_check_map).toString()+"] 】");
 							}else {
-								LOG.info("-->" + user_id + " 【 目标库检查线程 项目[" + svn_project_url + "]svn文档检查完毕，进度更新信息存入redis失败，待后续处理 】");
+								LOG.info("-->"+user_id+" 【 目标库检查线程 项目["+svn_project_url+"]svn文档检查完毕 进度更新信息存入redis失败 待后续处理 】");
 							}
 						}else {
-							LOG.info("-->" + user_id + "【 目标库 本次项目下属文档数量为0 略过 】");
+							LOG.info("-->"+user_id+" 【 目标库 本次项目下属文档数量为0 略过 】");
 						}
 						continue;
 					}
-					LOG.info("-->" + user_id + "【 目标库 检查完毕 】");
-					dist_success = true;
+					LOG.info("-->"+user_id+" 【 目标库 立项类项目检查完毕 】");
+					dist_lx_success = true;//设置目标库立项类项目成功标记
 				} catch (Exception e) {
-					LOG.info("-->" + user_id + "【 目标库 比对svn文件信息失败，失败信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+" 【 目标库 比对svn文件信息失败 失败信息["+e.getMessage()+"] 】");
 				}
-				//目标库检查
-				if(dist_success == true) {
-					return "success";
-				}else {
-					//如果目标库失败 整体失败
-					return "error";
+				
+				//目标库立项类检查
+				if(dist_lx_success != true) {
+					return "error";//如果目标库失败 整体失败
 				}
+				
+				try {
+					/**
+					 * step 4
+					 * 开始目标库维护优化类 所有文档
+					 */
+					String redis_check_map = jedis.get(full_key);
+					//解析json格式字符串
+					JSONObject final_check_map = JSONObject.parseObject(redis_check_map);
+					Set<String> keySet  = final_check_map.keySet();//项目集合
+					LOG.info("-->"+user_id+" 【 目标库 准备要处理裁剪表的项目信息["+keySet+"] 】");
+					for (String svn_project_url : keySet) 
+					{
+						List<String> project_all_urls = new LinkedList<String>();
+						if (svn_project_url.contains("WH")) {
+							LOG.info("-->"+user_id+"【 目标库 正在检查维护类项目项目["+svn_project_url+"] 】");
+							//该项目所有的修复的版本的文档
+							project_all_urls = getSvnFileBaseInfoDto(repository, "维护优化项目/" + svn_project_url, true);
+						} else if (svn_project_url.contains("LX")) {
+							continue;
+						}
+						//获取每个项目的检查表
+						JSONArray project_checkTable = final_check_map.getJSONObject(svn_project_url).getJSONArray("checkTable");
+						if(project_all_urls.size() > 0) 
+						{
+							int length = project_checkTable.size();
+							for (int project_check_table_index = 0; project_check_table_index < length; project_check_table_index++) 
+							{
+								JSONObject temp = project_checkTable.getJSONObject(project_check_table_index);
+								String template_name = temp.getString("templateName");
+								template_name = template_name.substring(1, template_name.length() - 1);
+								for (String url : project_all_urls) // 每个项目目录下面所有的文档 任何文档
+								{
+									String direct_url = url.substring(url.lastIndexOf("/") + 1, url.length());
+									if (direct_url.contains(template_name)) {
+										LOG.info("-->"+user_id+"【 目标库 命中模板["+template_name+"]设置存在标记为1 】");
+										temp.replace("exist", 1);
+									}
+									temp.replace("done", 1);//不管在不在 处理过 先设置处理标记为1
+									project_checkTable.set(project_check_table_index, temp);//重置该裁剪项到原本位置
+								}
+							}
+							LOG.info("-->"+user_id+"【 项目["+svn_project_url+"]检查结束 】");
+							String status =jedis.set(full_key,JSONObject.toJSON(final_check_map).toString());
+							if ("ok".equals(status) || "OK".equals(status)) {
+								LOG.info("-->"+user_id+" 【 目标库 项目["+svn_project_url+"]svn文档检查完毕 进度更新信息存入redis成功 "
+										+ "更新的数据["+JSONObject.toJSON(final_check_map).toString()+"] 】");
+							}else {
+								LOG.info("-->"+user_id+" 【 目标库 项目["+svn_project_url+"]svn文档检查完毕 进度更新信息存入redis失败 待后续处理 】");
+							}
+						}else {
+							LOG.info("-->"+user_id+" 【 目标库 本次项目下属文档数量为0 略过 】");
+						}
+						continue;
+					}
+					LOG.info("-->"+user_id+" 【 目标库 维护类项目 检查完毕 】");
+					dist_wh_success = true;//设置目标库维护类项目成功标记
+				} catch (Exception e) {
+					LOG.info("-->"+user_id+" 【 目标库 比对svn文件信息失败 失败信息["+e.getMessage()+"] 】");
+				}
+				//目标库维护类检查
+				if(dist_wh_success != true) {
+					return "error";//如果目标库失败 整体失败
+				}
+				return "success";
 			}
 		});
+		
 		/**
 		 * step3:收尾线程
 		 * 负责给维护类设置done标记
 		 */
 		pool.submit(new Callable<String>() 
 		{
-			public String call() {
-				try {
-					//获取需求库和目标库的执行结果 阻塞获取
-					//String need_result = need_thread_result.get();
-					String dist_result = dist_thread_result.get();
-					//如果执行完毕且都拿到了返回值 无论success还是error
-					if(dist_result != null) 
+			public String call() 
+			{
+				try 
+				{
+					String dist_result = asyc_task.get();//获取需求库和目标库的执行结果 阻塞获取
+					if(dist_result != null) //如果执行完毕且都拿到了返回值
 					{
 						//如果都执行成功了
 						if("success".equals(dist_result)) 
 						{
-							LOG.info("-->" + user_id + "【 tc、需求、目标库检测完毕 守护线程开始工作  正在修改项目信息 并关闭线程池");
+							LOG.info("-->"+user_id+" 【 tc、需求、目标库(研发类、维护类)检测完毕 守护线程开始工作 正在修改项目信息 并关闭线程池");
 							Jedis jedis = JedisPool.getResource();
 							String redis_check_map = jedis.get(full_key);
 							JSONObject final_check_map = JSONObject.parseObject(redis_check_map);
 							Set<String> projectKey = final_check_map.keySet();
 							
-							for (String key : projectKey) {
+							for (String key : projectKey) 
+							{
 								JSONArray checkTable = final_check_map.getJSONObject(key).getJSONArray("checkTable");
 								int length = checkTable.size();
-								for (int index = 0; index < length; index++) {
+								for (int index = 0; index < length; index++) 
+								{
 									JSONObject temp = checkTable.getJSONObject(index);
 									if (temp.getIntValue("done") == 0) {
 										temp.replace("done", 1);
@@ -627,24 +801,24 @@ public class ExcelCheckController
 							// 处理完毕 存入redis
 							String status = jedis.set(full_key,JSONObject.toJSON(final_check_map).toString());
 							if ("ok".equals(status) || "OK".equals(status)) {
-								LOG.info("-->" + user_id + "【 收尾线程更新项目完成度信息并存入redis的数据：" + JSONObject.toJSON(final_check_map).toString() + " 】成功");
+								LOG.info("-->"+user_id+" 【 收尾线程更新项目完成度信息并存入redis的数据["+JSONObject.toJSON(final_check_map).toString()+"] 】成功");
 								pool.shutdown();//关闭线程池
 								monitor.remove(full_key);//去除当前用户的线程池监控
 								max_person_num.decrementAndGet();//去掉占用的坑
-								LOG.info("-->" + user_id + "【 收尾线程完成工作：去除当前用户的线程池监控 关闭线程池 去除占用的坑 】");
+								LOG.info("-->"+user_id+"【 收尾线程完成工作：去除当前用户的线程池监控 关闭线程池 去除占用的坑 】");
 								jedis.close();
 								return "success";
 							} else {
-								LOG.info("-->" + user_id + "【 收尾线程更新项目完成度信息并存入redis失败 待后续处理 】");
+								LOG.info("-->"+user_id+"【 收尾线程更新项目完成度信息并存入redis失败 待后续处理 】");
 								pool.shutdown();//关闭线程池
 								monitor.remove(full_key);//去除当前用户的线程池监控
 								max_person_num.decrementAndGet();//去掉占用的坑
-								LOG.info("-->" + user_id + "【 收尾线程完成工作：去除当前用户的线程池监控 关闭线程池 去除占用的坑 】");
+								LOG.info("-->"+user_id+"【 收尾线程完成工作：去除当前用户的线程池监控 关闭线程池 去除占用的坑 】");
 								jedis.close();
 								return "error";
 							}
 						}else if("error".equals(dist_result)) {
-							LOG.info("-->" + user_id + "【 目标库线程执行任务失败 】");
+							LOG.info("-->"+user_id+"【 tc、需求、目标库(研发类、维护类)执行任务失败 】");
 						}
 						/**
 						 * 遇到了失败情况
@@ -652,22 +826,22 @@ public class ExcelCheckController
 						 */
 						long status = JedisPool.getResource().del(full_key);
 						if(status == 1) {
-							LOG.info("-->" + user_id + "【 检查任务执行失败 删除任务key" + full_key + "成功 】");
+							LOG.info("-->"+user_id+"【 检查任务执行失败 删除任务key["+full_key+"]成功 】");
 						}else {
-							LOG.info("-->" + user_id + "【 检查任务执行失败 删除任务key" + full_key + "失败,后续可以自行删除 】");
+							LOG.info("-->"+user_id+"【 检查任务执行失败 删除任务key["+full_key+"]失败 后续可以自行删除 】");
 						}
 						pool.shutdown();//关闭线程池
 						monitor.remove(full_key);//去除当前用户的线程池监控
 						max_person_num.decrementAndGet();//去掉占用的坑
-						LOG.info("-->" + user_id + "【 去除当前用户的线程池监控 关闭线程池 】");
+						LOG.info("-->"+user_id+"【 去除当前用户的线程池监控 关闭线程池 】");
 						return "error";
 					}
 				} catch (Exception e) {
-					LOG.info("-->" + user_id + "【 收尾线程更新项目完成度信息出错，错误信息：" + e.getMessage() + " 】");
+					LOG.info("-->"+user_id+"【 收尾线程更新项目完成度信息出错 错误信息["+e.getMessage()+"] 】");
 					pool.shutdown();//关闭线程池
 					monitor.remove(full_key);//去除当前用户的线程池监控
 					max_person_num.decrementAndGet();//去掉占用的坑
-					LOG.info("-->" + user_id + "【 去除当前用户的线程池监控 关闭线程池 】");
+					LOG.info("-->"+user_id+"【 去除当前用户的线程池监控 关闭线程池 】");
 					return "error";
 				}
 				return "success";
@@ -677,7 +851,7 @@ public class ExcelCheckController
 		 * 设置线程池监控
 		 */
 		monitor.put(full_key,pool);
-		LOG.info("-->" + user_id + "【 用户:" + user_id + "设置线程池监控成功,监控唯一key：" + full_key + " 】");
+		LOG.info("-->"+user_id+"【 用户["+user_id+"]设置线程池监控成功 监控唯一key["+full_key+"] 】");
 		//返回响应
 		result.put("status", "success");
 		result.put("request_id", full_key);

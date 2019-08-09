@@ -28,4 +28,8 @@ public interface SvnCheckDao
 	public void batchInsertProject(@Param("projects")List<ProjectInfo> add_to_db_project);
 	//获取项目全部信息
 	public List<ProjectInfo> getAllProject();
+	
+	public void updateProjectMoveStatusAndDate(@Param("project_code_name")String project_code_name, 
+											   @Param("status")String status, 
+											   @Param("date")String date);
 }

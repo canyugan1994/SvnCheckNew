@@ -16,7 +16,6 @@ com/canyugan/controller/SynchronizController.class
 com/canyugan/configuration/Redis.class
 com/canyugan/service/SvnCheckService.class
 com/canyugan/pojo/realListMoel.class
-com/canyugan/controller/MigrationController$3.class
 com/canyugan/interceptor/HandShakeInterceptor.class
 com/canyugan/controller/ReportController.class
 com/canyugan/pojo/MetaModel.class
@@ -38,8 +37,9 @@ com/canyugan/pojo/developWriterModel.class
 com/canyugan/configuration/WebApiConfig.class
 com/canyugan/util/StyleExcelHandler.class
 com/canyugan/pojo/DescriptionModel.class
-com/canyugan/controller/MigrationController$4.class
+com/canyugan/configuration/ThreadPoolFactory.class
 com/canyugan/configuration/RedisPoolConditional.class
+com/canyugan/util/DateUtil$1.class
 com/canyugan/controller/MigrationController$1.class
 com/canyugan/configuration/WebSocketConfig.class
 com/canyugan/controller/ExcelCheckController$QuitCheck.class

@@ -1,9 +1,10 @@
 package com.canyugan.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.canyugan.pojo.AuditDownload;
 import com.canyugan.pojo.ProjectInfo;
-import com.canyugan.service.SXProjectInfoService;
+import com.canyugan.service.SXNeedService;
 import com.canyugan.service.SvnCheckService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
@@ -54,8 +55,6 @@ public class OtherController
 {
 	private static final Logger LOG = LoggerFactory.getLogger(OtherController.class);
 	@Autowired
-	private SXProjectInfoService sxProjectInfoService;
-	@Autowired
 	private JedisPool JedisPool;
 	@Value("${save_path}")
 	private String save_path;
@@ -65,6 +64,33 @@ public class OtherController
 	private String code_style;
 	@Autowired
 	private SvnCheckService svnCheckService;
+	@Autowired
+	private SXNeedService sxNeedService;
+	private String splitString = "_caorui_";
+	
+	@ApiOperation(value = "[获取双速项目需求类信息]")
+	@RequestMapping(value = { "/svnCheck/getAllNeedInfo" }, method = { RequestMethod.GET }, produces = {"application/json;charset=utf8" })
+	@ResponseBody
+	public JSONObject getAllNeedInfo() 
+	{
+		JSONObject result = new JSONObject();
+		try {
+			JSONArray temp_array = sxNeedService.sendServiceRequest();
+			//从数据库中获取项目信息
+			if(temp_array == null) {
+				result.put("status", "error");
+				result.put("message","双速项目信息接口调用失败 本次无法获取双速项目信息");
+			}else {
+				result.put("status", "success");
+				result.put("data", temp_array);
+			}
+		} catch (Exception e) {
+			LOG.info("-->【 接口调用出错，出错信息[" + e.getMessage() + "] 】");
+			result.put("status", "error");
+			result.put("message", "服务器繁忙 请联系管理员");
+		}
+		return result;
+	}
 	
 	/**
 	 * 获取双速的项目信息
@@ -77,13 +103,6 @@ public class OtherController
 	{
 		JSONObject result = new JSONObject();
 		try {
-//			JSONArray temp_array = sxProjectInfoService.sendServiceRequest();
-//			//从数据库中获取项目信息
-//			if(temp_array == null) {
-//				result.put("status", "error");
-//				result.put("message","双速项目信息接口调用失败 本次无法获取双速项目信息");
-//				return result;
-//			}
 			List<ProjectInfo> temp_array = svnCheckService.getAllProject();
 			List<ProjectInfo> result_array = new LinkedList<ProjectInfo>();
 			if(temp_array.size() > 0)
@@ -97,13 +116,12 @@ public class OtherController
 			}
 			result.put("status", "success");
 			result.put("data", result_array);
-			return result;
 		} catch (Exception e) {
-			LOG.info("-->【 数据库查询出错，出错信息:" + e.getMessage() + "】");
+			LOG.info("-->【 数据库查询出错，出错信息[" + e.getMessage() + "] 】");
 			result.put("status", "error");
 			result.put("message", "服务器繁忙 请联系管理员");
-			return null;
 		}
+		return result;
 	}
 
 	@ApiModel(value = "AuditReport", description = "审计报表")
@@ -205,15 +223,15 @@ public class OtherController
 				sort_result.addAll(result_set);
 				result.put("status", "success");
 				result.put("data", sort_result);
-				LOG.info("-->【 审计报表查询成功，查询的报表数据:" + JSONObject.toJSON(sort_result)  + " 】");
+				LOG.info("-->【 审计报表查询成功，查询的报表数据[" + JSONObject.toJSON(sort_result)  + "] 】");
 			} else {
-				LOG.info("-->【 根据user_id:[" + user_id + "]未检查到对应报表 】");
+				LOG.info("-->【 根据user_id[" + user_id + "]未检查到对应报表 】");
 				result.put("status", "error");
-				result.put("message", "根据user_id:[" + user_id + "]未检查到对应报表");
+				result.put("message", "根据user_id[" + user_id + "]未检查到对应报表");
 				return result;
 			}
 		} catch (Exception e) {
-			LOG.info("-->【 接口发生异常 异常信息:" + e.getMessage() + "】");
+			LOG.info("-->【 接口发生异常 异常信息[" + e.getMessage() + "] 】");
 			result.put("status", "error");
 			result.put("message", "服务器繁忙 请联系管理员");
 		}
@@ -227,7 +245,7 @@ public class OtherController
 	 */
 	@ApiOperation(value = "裁剪模板表下载", notes = "裁剪模板表下载")
 	@RequestMapping(value = { "/svnCheck/downloadTemplate" }, method = { RequestMethod.GET })
-	public void trainModel(HttpServletRequest request, HttpServletResponse response) 
+	public void templateDownload(HttpServletRequest request, HttpServletResponse response) 
 	{
 		try {
 			InputStream fileIn = new FileInputStream(new File(template_file));
@@ -246,7 +264,7 @@ public class OtherController
 				fileIn.close();
 			}
 		} catch (Exception e) {
-			LOG.info("-->【 模板表下载失败，失败信息:" + e.getMessage() + "】");
+			LOG.info("-->【 模板表下载失败，失败信息[" + e.getMessage() + "] 】");
 		}
 	}
 	
@@ -266,7 +284,7 @@ public class OtherController
 		Set<String> paramKey = param.keySet();
 		// 打印全部参数值
 		for (String key : paramKey) {
-			LOG.info("-->【 param:" + key + ",value:" + URLDecoder.decode(param.get(key)[0]) + ",decode value:" + param.get(key)[0] + "】");
+			LOG.info("-->【 key[" + key + "],decode value[" + URLDecoder.decode(param.get(key)[0]) + "],encode value[" + param.get(key)[0] + "] 】");
 		}
 		// 接口文档给出的参数
 		String projectName = request.getParameter("projectName");//项目名称
@@ -282,62 +300,61 @@ public class OtherController
 			result.put("errorMsg", "接口文档必传参数为null 请根据接口文档仔细检查");
 			return result;
 		}
-		//检查文件
-		try {
+		try 
+		{
 			for(MultipartFile file:uploadFile) 
 			{
 				// 把文件保存进save_path目录下
 				try {
-					/**
-					 * 创建TC的SIT、UAT文档存放目录
-					 */
+					//创建TC的SIT、UAT文档存放目录
 					File final_path = null;
 					try {
 						/**
 						 * 创建文件存储的目录
 						 */
 						// 部门
-						File first_path = new File(save_path + URLDecoder.decode(department));
+						File first_path = new File(save_path + 
+											  URLDecoder.decode(department));
 						if(!first_path.exists()) {
 							first_path.mkdir();
 						}
 						// 部门/修复的版本
-						File second_path = new File(save_path + URLDecoder.decode(department) + "/" + date);
+						File second_path = new File(save_path + 
+								              URLDecoder.decode(department) + "/" + 
+								              URLDecoder.decode(date));
 						if(!second_path.exists()) {
 							second_path.mkdir();
 						}
 						// 部门/修复的版本/需求编号
-						File third_path = new File(save_path + URLDecoder.decode(department) + "/" + date + "/" + reqcode);
+						File third_path = new File(save_path + 
+								              URLDecoder.decode(department) + "/" + 
+								              URLDecoder.decode(date) + "/" + 
+								              URLDecoder.decode(reqcode));
 						if(!third_path.exists()) {
 							third_path.mkdir();
 						}
-						//获取文件名
-						String file_name = projectID + "caorui" + URLDecoder.decode(projectName) + "caorui" + file.getOriginalFilename();
+						//获取压缩文件的文件名
+						String file_name = file.getOriginalFilename();
 						// 部门/修复的版本/需求编号/云上卡中心UAT文档
-						final_path = new File(save_path + URLDecoder.decode(department) + "/" + date + "/" + reqcode + "/" + file_name);
+						final_path = new File(save_path + 
+								              URLDecoder.decode(department) + "/" + 
+								              URLDecoder.decode(date) + "/" + 
+								              URLDecoder.decode(reqcode) + "/" + 
+								              file_name);
 						if(!final_path.exists()) {
 							final_path.createNewFile();
 						}
-						/**
-						 * 存储文件
-						 */
+						//存储文件
 						FileOutputStream out = new FileOutputStream(final_path);
 						byte[] fileByte = file.getBytes();
-						LOG.info("-->【 file size: " + fileByte.length + " ,file_name: " + file_name + " 】");
 						out.write(fileByte);
 						out.flush();
 						out.close();
-						LOG.info("-->【 " + final_path.getName() + " 文件存储成功 返回】");
-						result.put("state", "0000");
-						result.put("errorMsg", null);
-						
-						LOG.info("-->【 正在解压文件：" + file_name + " 】");
-						/**
-						 * 解压文件
-						 */
+						LOG.info("-->【 开始解压文件[" + file_name + "] 】");
+						//解压文件
 						ZipFile zipFile = null;
 						try {
-							LOG.info("-->【 " + final_path.getParentFile().getPath() + " 】");
+							LOG.info("-->【 压缩文件所在目录[" + final_path.getParentFile().getPath() + "] 】");
 							zipFile = new ZipFile(final_path,Charset.forName(code_style));
 							Enumeration<?> entries = zipFile.entries();
 							while(entries.hasMoreElements()) {
@@ -345,7 +362,9 @@ public class OtherController
 								//仅解压文件
 								if(!entry.isDirectory()) {
 									try {
-										File tergetFile = new File(final_path.getParentFile().getPath() + "/" + entry.getName());
+										File tergetFile = new File(
+												final_path.getParentFile().getPath() + "/" + 
+										        entry.getName());
 										tergetFile.createNewFile();//创建新文件
 										InputStream is = zipFile.getInputStream(entry);//获取原始文件io流
 										FileOutputStream fos = new FileOutputStream(tergetFile);//目标输出流
@@ -357,34 +376,38 @@ public class OtherController
 										fos.close();
 										is.close();
 									} catch (Exception e) {
-										LOG.info("-->【 解压文件:" + entry.getName() + " 失败】");
+										LOG.info("-->【 解压文件[" + entry.getName() + "] 失败】");
 									}
-									LOG.info("-->【 解压文件：" + entry.getName() + " 成功】");
+									LOG.info("-->【 解压文件[" + entry.getName() + "] 成功】");
 								}
 							}
 						} catch (Exception e) {
-							LOG.info("-->【 解压文件:" + file_name + "失败，失败信息:" + e.getMessage() + " 】");
+							LOG.info("-->【 解压文件[" + file_name + "]失败，失败信息[" + e.getMessage() + "] 】");
 						}
-						/**
-						 * 删除原文件
-						 */
+						//返回成功信息
+						LOG.info("-->【 返回client端成功信息 】");
+						result.put("state", "0000");
+						result.put("errorMsg", null);
+						//删除原文件
 						try {
 							if(final_path.delete()) {
-								LOG.info("-->【 删除原始压缩文件:" + file_name + "成功 】");
+								LOG.info("-->【 删除原始压缩文件[" + file_name + "]成功 】");
 							}
 						} catch (Exception e) {
-							LOG.info("-->【 删除原始压缩文件:" + file_name + "失败，失败信息：" + e.getMessage() + " 】");
+							LOG.info("-->【 删除原始压缩文件["+file_name+"]失败,失败信息["+e.getMessage()+"] 】");
 						}
+						return result;
 					} catch (Exception e) {
-						LOG.info("-->【 创建文件出错，错误信息：" + e.getMessage() + " 】");
+						LOG.info("-->【 创建文件出错，错误信息[" + e.getMessage() + "] 】");
 						result.put("state", "0001");
 						result.put("errorMsg", "服务器繁忙 请联系卡中心管理员");
 						return result;
 					}
 				} catch (Exception e) {
-					LOG.info("-->【 错误信息：" + e.getMessage() + " 】");
+					LOG.info("-->【 错误信息[" + e.getMessage() + "] 】");
 					result.put("state", "0001");
 					result.put("errorMsg", "服务器繁忙 请联系卡中心管理员");
+					return result;
 				}
 			}
 		} catch (Exception e) {
