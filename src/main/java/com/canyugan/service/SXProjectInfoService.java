@@ -73,7 +73,7 @@ public class SXProjectInfoService
 			}
 		} catch (Exception e) {
 			if(LOG.isInfoEnabled()) {
-				LOG.info("-->【 双速项目信息接口失败，失败信息:" + e.getMessage() + " 】");
+				LOG.info("-->【 双速项目信息接口失败 失败信息["+e.getMessage()+"] 】");
 			}
 		}
 		return null;

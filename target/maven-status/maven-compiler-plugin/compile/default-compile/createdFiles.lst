@@ -16,6 +16,7 @@ com/canyugan/controller/SynchronizController.class
 com/canyugan/configuration/Redis.class
 com/canyugan/service/SvnCheckService.class
 com/canyugan/pojo/realListMoel.class
+com/canyugan/controller/MigrationController$3.class
 com/canyugan/interceptor/HandShakeInterceptor.class
 com/canyugan/controller/ReportController.class
 com/canyugan/pojo/MetaModel.class

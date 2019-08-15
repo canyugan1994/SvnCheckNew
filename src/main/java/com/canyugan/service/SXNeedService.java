@@ -59,7 +59,7 @@ public class SXNeedService
 			LOG.info("-->【 双速需求文档接口调用失败 】");
 			return null;
 		} catch (Exception e) {
-			LOG.info("-->【 双速需求文档接口调用失败，失败信息：" + e.getMessage() + " 】");
+			LOG.info("-->【 双速需求文档接口调用失败 失败信息["+e.getMessage()+"] 】");
 			return null;
 		}
 	}
