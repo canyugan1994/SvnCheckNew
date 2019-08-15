@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyJobFactory extends AdaptableJobFactory 
 {
-    //这个对象Spring会帮我们自动注入进来,也属于Spring技术范畴.
+    //Spring自动注入
     @Autowired
     private AutowireCapableBeanFactory capableBeanFactory;
     
@@ -22,7 +22,7 @@ public class MyJobFactory extends AdaptableJobFactory
     {
         //调用父类的方法
         Object jobInstance = super.createJobInstance(bundle);
-        //进行注入,这属于Spring的技术,不清楚的可以查看Spring的API.
+        //进行注入
         capableBeanFactory.autowireBean(jobInstance);
         return jobInstance;
     }
