@@ -20,7 +20,6 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -157,8 +156,7 @@ public class ExcelCheckController
 	{
 		JSONObject result = new JSONObject();
 		String user_id = quitCheck.getRequest_id();
-		//如果根据用户id获取对应任务线程池存在
-		if(monitor.get(user_id) != null) {
+		if(monitor.get(user_id) != null) {//如果根据用户id获取对应任务线程池存在
 			LOG.info("-->【 request_id["+user_id+"]正在终止检查任务 】");
 			monitor.get(user_id).shutdownNow();//立即关闭线程池 不做善后处理
 			monitor.remove(user_id);//去除该用户的监控

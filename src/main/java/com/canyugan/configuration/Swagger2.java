@@ -27,7 +27,6 @@ public class Swagger2
 				.apiInfo(apiInfo())
 				.select()
 				.apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-				//.apis(RequestHandlerSelectors.basePackage("com.canyugan.controller"))
 				.paths(PathSelectors.any())
 				.build();
 	}
@@ -36,7 +35,7 @@ public class Swagger2
 	{
 		return new ApiInfoBuilder()
 				.title("交付物检查工具api doc")
-				.description("Api doc For 交付物检查工具")
+				.description("Api docs For 交付物检查工具")
 				.version("2.0")
 				.build();
 	}

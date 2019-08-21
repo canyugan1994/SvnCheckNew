@@ -233,7 +233,7 @@ public class OtherController
 					}
 				}
 				/**
-				 * 对set集合内的元素进行排序
+				 * 对set集合内的元素进行降序排序
 				 */
 				Set<AuditDownload> sort_result  = new TreeSet<AuditDownload>(new Comparator<AuditDownload>() {
 					@Override
@@ -383,7 +383,7 @@ public class OtherController
 						ZipFile zipFile = null;
 						try 
 						{
-							LOG.info("-->【 压缩文件所在目录[" + final_path.getParentFile().getPath() + "] 】");
+							LOG.info("-->【 压缩文件所在目录["+final_path.getParentFile().getPath()+"] 】");
 							zipFile = new ZipFile(final_path,Charset.forName(code_style));
 							Enumeration<?> entries = zipFile.entries();
 							while(entries.hasMoreElements()) 
@@ -392,11 +392,23 @@ public class OtherController
 								if(!entry.isDirectory())
 								{
 									try {
-										//项目编号-项目名称+分隔符+文档名
-										String final_name = 
-												final_path.getParentFile().getPath()+"/"
-												+projectID+"-"+URLDecoder.decode(projectName).split("（")[0]
+										String decode_name = URLDecoder.decode(projectName);
+										int curr_index = -1;
+										//tc推送参数项目名会附带() 活着（） 此处进行区分
+										for(int index = 0;index < decode_name.length();index++) {
+											if(decode_name.charAt(index) == '(') {
+												curr_index = index;
+												break;
+											}else if(decode_name.charAt(index) == '（') {
+												curr_index = index;
+												break;
+											}
+										}
+										String final_name = final_path.getParentFile().getPath()+"/"
+												+projectID+"-"
+												+decode_name.substring(0,curr_index == -1 ? decode_name.length() :curr_index)
 												+splitString+entry.getName();
+										//项目编号-项目名称+分隔符+文档名
 										File tergetFile = new File(final_name);
 										tergetFile.createNewFile();//创建新文件
 										InputStream is = zipFile.getInputStream(entry);//获取原始文件io流
@@ -410,7 +422,7 @@ public class OtherController
 										is.close();
 										LOG.info("-->【 解压文件["+entry.getName()+"]成功 解压后的文件名["+tergetFile.getName()+"] 】");
 									} catch (Exception e) {
-										LOG.info("-->【 解压文件["+entry.getName()+"] 失败】");
+										LOG.info("-->【 解压文件["+entry.getName()+"] 失败 失败信息["+e.getMessage() +"] 】");
 										result.put("state", "0001");
 										result.put("errorMsg", "服务器繁忙 请联系卡中心管理员");
 										return result;
@@ -469,7 +481,6 @@ public class OtherController
 	 * @param path
 	 * @param type
 	 * @param source
-	 * @return
 	 * @throws SVNException
 	 */
 	public List<String> getSvnBaseInfo(SVNRepository repository, String path,String type,String source) throws SVNException {
@@ -524,9 +535,8 @@ public class OtherController
 			LOG.info("-->【 目标库svn服务器["+dist_svn_url+"]连接失败 失败信息["+e.getMessage()+"] 】");
 			return "error";
 		 }
-		 try 
+		 try //开始进行TC迁移 
 		 {
-			 //开始进行TC迁移
 		 	if(!final_path.exists()) {//如果根目录被删
 				LOG.info("-->【 TC文档所在的根目录["+final_path+"]不存在 请检查目录是否存在 迁移作废  】");
 				return "error";//快速失败
@@ -675,6 +685,8 @@ public class OtherController
 									project_info+"/"+release_final+"/"+reqcode+"/03-测试]失败 失败信息:"+e.getMessage()+" 】");
 						}
 					}
+				}else {
+					LOG.info("-->【 项目编号和项目名称异常 这是正常信息 属于tc测试人员推送的无效文档请求 项目信息["+project_info+"]  】");
 				}
 			}
 		} catch (Exception e) {

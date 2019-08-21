@@ -12,7 +12,6 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  */
 public class RedisPoolConditional implements Condition
 {
-
 	@Override
 	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata)
 	{
@@ -25,5 +24,4 @@ public class RedisPoolConditional implements Condition
 			   && env.containsProperty("redis.pool.min-idle")
 			   && env.containsProperty("redis.pool.max-wait");
 	}
-
 }
